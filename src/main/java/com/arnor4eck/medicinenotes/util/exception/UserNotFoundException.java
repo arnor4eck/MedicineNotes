@@ -1,4 +1,4 @@
-package com.arnor4eck.medicinenotes.utils.exception;
+package com.arnor4eck.medicinenotes.util.exception;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(String message) {
