@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: MedicineNotes
+  datasource:
+    url: jdbc:postgresql://localhost:5433/MedicineNotes
+    username: admin
+    password: secret
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+    org.springframework.jdbc.core: DEBUG
+    org.springframework.transaction: DEBUG
