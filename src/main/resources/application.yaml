@@ -20,3 +20,7 @@ logging:
     org.hibernate.type.descriptor.sql: TRACE
     org.springframework.jdbc.core: DEBUG
     org.springframework.transaction: DEBUG
+
+jwt:
+  lifetime: 30000
+  secret: testfkwofnasjfnueh83nd82
