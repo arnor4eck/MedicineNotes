@@ -1,15 +1,14 @@
 package com.arnor4eck.medicinenotes.controller;
 
-import com.arnor4eck.medicinenotes.entity.User;
 import com.arnor4eck.medicinenotes.service.UserService;
+import com.arnor4eck.medicinenotes.util.request.AuthenticationRequest;
 import com.arnor4eck.medicinenotes.util.request.CreateUserRequest;
+import com.arnor4eck.medicinenotes.util.response.AuthenticationResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -24,4 +23,13 @@ public class UserController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/authentication")
+    public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody @Valid AuthenticationRequest request) {
+        AuthenticationResponse response = userService.authenticate(request);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
+    }
+
 }
