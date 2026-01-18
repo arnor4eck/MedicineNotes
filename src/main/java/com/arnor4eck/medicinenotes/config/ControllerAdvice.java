@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -25,5 +26,14 @@ public class ControllerAdvice {
         response.setStatus(errorCode);
 
         return new ExceptionResponse(errorCode, errors);
+    }
+
+    @ExceptionHandler({ResponseStatusException.class})
+    public ExceptionResponse responseStatusException(ResponseStatusException e,
+                                                     HttpServletResponse response){
+        int errorCode = e.getStatusCode().value();
+        response.setStatus(errorCode);
+
+        return new ExceptionResponse(errorCode, e.getReason());
     }
 }
