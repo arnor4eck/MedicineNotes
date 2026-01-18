@@ -24,4 +24,8 @@ public class MedicineTemplate {
     private LocalDate until;
     @Column(nullable = false)
     private long quantityPerDay;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User creator;
 }
