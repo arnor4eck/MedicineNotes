@@ -17,10 +17,13 @@ public record IntakeDto(long id, String name,
 
     public static IntakeDto fromEntity(Intake entity) {
 
+        String adoptedAt = entity.getAdoptedIn() == null ? null :
+                entity.getAdoptedIn().toInstant(ZoneOffset.UTC)
+                        .atZone(ZoneId.of("Europe/Moscow")).format(dateTimeFormatter);
+
         return new IntakeDto(entity.getId(),
                             entity.getTemplate().getName(),
-                            entity.getAdoptedIn().toInstant(ZoneOffset.UTC)
-                            .atZone(ZoneId.of("Europe/Moscow")).format(dateTimeFormatter),
+                            adoptedAt,
                             entity.getStatus().toString());
     }
 }
