@@ -2,9 +2,11 @@ package com.arnor4eck.medicinenotes.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 public class Intake {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +25,9 @@ public class Intake {
     private MedicineTemplate template;
 
     private LocalDateTime adoptedIn;
+
+    @Column(nullable = false)
+    private LocalDate shouldAdoptedIn;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
