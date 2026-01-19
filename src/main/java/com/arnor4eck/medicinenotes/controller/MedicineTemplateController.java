@@ -1,16 +1,13 @@
 package com.arnor4eck.medicinenotes.controller;
 
-import com.arnor4eck.medicinenotes.entity.MedicineTemplate;
-import com.arnor4eck.medicinenotes.repository.TemplateRepository;
 import com.arnor4eck.medicinenotes.service.MedicineTemplateService;
 import com.arnor4eck.medicinenotes.util.dto.MedicineTemplateDto;
+import com.arnor4eck.medicinenotes.util.request.CreateTemplateRequest;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -25,5 +22,12 @@ public class MedicineTemplateController {
         return MedicineTemplateDto
                 .getMedicineTemplateDto(
                         templateService.getTemplateByIdCreator(id, email));
+    }
+
+    @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createTemplate(@RequestBody @Valid CreateTemplateRequest request,
+                                               @AuthenticationPrincipal String email){
+        templateService.create(request, email);
     }
 }

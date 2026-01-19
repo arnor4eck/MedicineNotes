@@ -1,5 +1,6 @@
 package com.arnor4eck.medicinenotes.config;
 
+import com.arnor4eck.medicinenotes.util.exception.NotFoundException;
 import com.arnor4eck.medicinenotes.util.response.ExceptionResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestControllerAdvice
 public class ControllerAdvice {
+
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ExceptionResponse methodArgumentNotValidException(MethodArgumentNotValidException e,
                                                              HttpServletResponse response){
@@ -35,5 +37,14 @@ public class ControllerAdvice {
         response.setStatus(errorCode);
 
         return new ExceptionResponse(errorCode, e.getReason());
+    }
+
+    @ExceptionHandler({NotFoundException.class})
+    public ExceptionResponse responseStatusException(NotFoundException e,
+                                                     HttpServletResponse response){
+        int errorCode = HttpStatus.NOT_FOUND.value();
+        response.setStatus(errorCode);
+
+        return new ExceptionResponse(errorCode, e.getMessage());
     }
 }
