@@ -3,6 +3,7 @@ package com.arnor4eck.medicinenotes.service;
 import com.arnor4eck.medicinenotes.entity.MedicineTemplate;
 import com.arnor4eck.medicinenotes.entity.User;
 import com.arnor4eck.medicinenotes.repository.TemplateRepository;
+import com.arnor4eck.medicinenotes.util.dto.MedicineTemplateDto;
 import com.arnor4eck.medicinenotes.util.exception.MedicineTemplateNotFoundException;
 import com.arnor4eck.medicinenotes.util.request.CreateTemplateRequest;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,9 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -42,5 +46,11 @@ public class MedicineTemplateService {
                 .until(request.until())
                 .creator(creator)
                 .build());
+    }
+
+    public Collection<MedicineTemplateDto> getAllUserTemplates(String email) {
+        return templateRepository.findByCreatorEmail(email)
+                .stream().map(MedicineTemplateDto::getMedicineTemplateDto)
+                .collect(Collectors.toUnmodifiableList());
     }
 }

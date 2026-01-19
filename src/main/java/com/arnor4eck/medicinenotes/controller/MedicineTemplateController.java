@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/template")
@@ -29,5 +31,10 @@ public class MedicineTemplateController {
     public void createTemplate(@RequestBody @Valid CreateTemplateRequest request,
                                                @AuthenticationPrincipal String email){
         templateService.create(request, email);
+    }
+
+    @GetMapping("/my")
+    public Collection<MedicineTemplateDto> getTemplates(@AuthenticationPrincipal String email){
+        return templateService.getAllUserTemplates(email);
     }
 }
