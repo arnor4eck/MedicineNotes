@@ -1,6 +1,7 @@
 package com.arnor4eck.medicinenotes.config;
 
-import com.arnor4eck.medicinenotes.util.exception.NotFoundException;
+import com.arnor4eck.medicinenotes.util.exception.illegal_argument.LimitExceededException;
+import com.arnor4eck.medicinenotes.util.exception.not_found.NotFoundException;
 import com.arnor4eck.medicinenotes.util.response.ExceptionResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.MessageSourceResolvable;
@@ -55,6 +56,15 @@ public class ControllerAdvice {
         response.setStatus(errorCode);
 
         return new ExceptionResponse(errorCode, messages);
+    }
+
+    @ExceptionHandler({LimitExceededException.class})
+    public ExceptionResponse responseLimitExceededException(LimitExceededException e,
+                                                            HttpServletResponse response) {
+        int errorCode = HttpStatus.BAD_REQUEST.value();
+        response.setStatus(errorCode);
+
+        return new ExceptionResponse(errorCode, e.getMessage());
     }
 
     @ExceptionHandler({NotFoundException.class})

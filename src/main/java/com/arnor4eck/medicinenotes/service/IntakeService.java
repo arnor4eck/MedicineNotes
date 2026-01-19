@@ -3,7 +3,7 @@ package com.arnor4eck.medicinenotes.service;
 import com.arnor4eck.medicinenotes.entity.Intake;
 import com.arnor4eck.medicinenotes.repository.IntakeRepository;
 import com.arnor4eck.medicinenotes.util.dto.IntakeDto;
-import com.arnor4eck.medicinenotes.util.exception.IntakeNotFoundException;
+import com.arnor4eck.medicinenotes.util.exception.not_found.IntakeNotFoundException;
 import com.arnor4eck.medicinenotes.util.response.ExceptionResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,7 +48,7 @@ public class IntakeService {
     }
 
     public ExceptionResponse changeIntakeStatus(long id, String status, String email){
-        ExceptionResponse response = null;
+        ExceptionResponse response;
 
         if(intakeRepository.setStatus(id, status, email) == 1)
             response = new ExceptionResponse(HttpStatus.ACCEPTED.value(), "Статус приёма успешно изменён");

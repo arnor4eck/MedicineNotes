@@ -30,8 +30,6 @@ public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -51,7 +49,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PUT", "PATCH"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowCredentials(true);
         configuration.setExposedHeaders(List.of("Content-Disposition", "Content-Type"));
@@ -75,7 +73,6 @@ public class SecurityConfig {
                 .exceptionHandling(handle -> {
                     handle
                             .authenticationEntryPoint(jwtAuthenticationEntryPoint);
-                            //.accessDeniedHandler(jwtAccessDeniedHandler);
                 })
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->

@@ -13,4 +13,6 @@ public interface TemplateRepository extends JpaRepository<MedicineTemplate,Long>
             "WHERE u.email = :email " +
             "ORDER BY until", nativeQuery = true)
     Collection<MedicineTemplate> findByCreatorEmail(@Param("email") String email);
+
+    long countAllTemplatesByCreatorEmail(@Param("email") String email);
 }

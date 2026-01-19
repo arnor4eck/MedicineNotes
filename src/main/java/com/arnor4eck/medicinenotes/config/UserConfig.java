@@ -1,7 +1,7 @@
 package com.arnor4eck.medicinenotes.config;
 
 import com.arnor4eck.medicinenotes.repository.UserRepository;
-import com.arnor4eck.medicinenotes.util.exception.UserNotFoundException;
+import com.arnor4eck.medicinenotes.util.exception.not_found.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
