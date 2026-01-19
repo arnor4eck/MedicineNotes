@@ -39,7 +39,8 @@ public class IntakeService {
 
         if(date != null)
             intakes = intakes.stream()
-                    .filter(intake -> intake.getAdoptedIn().toLocalDate().equals(date))
+                    .filter(intake -> intake.getShouldAdoptedIn() != null &&
+                            intake.getShouldAdoptedIn().equals(date))
                     .collect(Collectors.toUnmodifiableList());
 
         return intakes.stream()

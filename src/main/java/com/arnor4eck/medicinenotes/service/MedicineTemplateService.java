@@ -1,8 +1,11 @@
 package com.arnor4eck.medicinenotes.service;
 
 import com.arnor4eck.medicinenotes.config.LimitsConfig;
+import com.arnor4eck.medicinenotes.entity.Intake;
+import com.arnor4eck.medicinenotes.entity.IntakesStatus;
 import com.arnor4eck.medicinenotes.entity.MedicineTemplate;
 import com.arnor4eck.medicinenotes.entity.User;
+import com.arnor4eck.medicinenotes.repository.IntakeRepository;
 import com.arnor4eck.medicinenotes.repository.TemplateRepository;
 import com.arnor4eck.medicinenotes.util.dto.MedicineTemplateDto;
 import com.arnor4eck.medicinenotes.util.exception.illegal_argument.LimitExceededException;
@@ -16,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +27,8 @@ import java.util.stream.Collectors;
 public class MedicineTemplateService {
 
     private final TemplateRepository templateRepository;
+
+    private final IntakeRepository intakeRepository;
 
     private final UserDetailsService userDetailsService;
 
@@ -57,13 +63,26 @@ public class MedicineTemplateService {
 
         User creator = (User) userDetailsService.loadUserByUsername(creatorEmail);
 
-        templateRepository.save(MedicineTemplate.builder()
+        MedicineTemplate template = templateRepository.save(MedicineTemplate.builder()
                 .name(request.name())
                 .description(request.description())
                 .quantityPerDay(request.quantityPerDay())
                 .until(request.until())
                 .creator(creator)
                 .build());
+
+        // TODO проработать систему с отрезочным созданием через Scheduler
+        List<Intake> futureIntakes = LocalDate.now().datesUntil(request.until())
+                .map(date ->
+                    Intake.builder()
+                            .template(template)
+                            .adoptedIn(null)
+                            .status(IntakesStatus.PENDING)
+                            .shouldAdoptedIn(date)
+                            .build()
+                ).toList();
+
+        intakeRepository.saveAll(futureIntakes);
     }
 
     public Collection<MedicineTemplateDto> getAllUserTemplates(String email) {
