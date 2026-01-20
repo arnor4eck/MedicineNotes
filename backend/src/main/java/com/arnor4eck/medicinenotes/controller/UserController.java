@@ -4,6 +4,8 @@ import com.arnor4eck.medicinenotes.service.UserService;
 import com.arnor4eck.medicinenotes.util.request.AuthenticationRequest;
 import com.arnor4eck.medicinenotes.util.request.CreateUserRequest;
 import com.arnor4eck.medicinenotes.util.response.AuthenticationResponse;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.arnor4eck.medicinenotes.util.dto.UserDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,4 +34,8 @@ public class UserController {
                 .body(response);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<UserDto> currentUser(@AuthenticationPrincipal String email){
+        return ResponseEntity.ok().body(userService.currentUser(email));
+    }
 }

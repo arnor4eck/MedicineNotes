@@ -7,6 +7,7 @@ import com.arnor4eck.medicinenotes.util.jwt.JwtAccessUtils;
 import com.arnor4eck.medicinenotes.util.request.AuthenticationRequest;
 import com.arnor4eck.medicinenotes.util.request.CreateUserRequest;
 import com.arnor4eck.medicinenotes.util.response.AuthenticationResponse;
+import com.arnor4eck.medicinenotes.util.dto.UserDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -51,5 +52,9 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,
                     e.getMessage());
         }
+    }
+
+    public UserDto currentUser(String email){
+        return UserDto.fromEntity(userRepository.findByEmail(email).get());
     }
 }
