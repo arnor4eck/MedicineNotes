@@ -31,7 +31,7 @@ public interface IntakeRepository extends JpaRepository<Intake,Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE intakes AS i SET status = 'DONE', adoptedIn = NOW()\n" +
+    @Query(value = "UPDATE intakes AS i SET status = 'DONE', adoptedIn = CURRENT_TIMESTAMP AT TIME ZONE 'UTC'\n" +
             "WHERE id = :id AND EXISTS(SELECT 1 FROM intakes AS i\n" +
             "    JOIN templates AS t ON t.id = i.template_id\n" +
             "    JOIN public.users AS u on u.id = t.user_id\n" +
