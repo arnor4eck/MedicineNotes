@@ -51,10 +51,13 @@ public class IntakeService {
     public ExceptionResponse changeIntakeStatus(long id, String status, String email){
         ExceptionResponse response;
 
-        if(intakeRepository.setStatus(id, status, email) == 1)
-            response = new ExceptionResponse(HttpStatus.ACCEPTED.value(), "Статус приёма успешно изменён");
+        if((status.equalsIgnoreCase("done") && intakeRepository.setDone(id, email) == 1) ||
+                intakeRepository.setStatus(id, status, email) == 1)
+            response = new ExceptionResponse(HttpStatus.ACCEPTED.value(),
+                    "Статус приёма успешно изменён");
         else
-            response = new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), "Не удалось изменить статус этого приёма.");
+            response = new ExceptionResponse(HttpStatus.BAD_REQUEST.value(),
+                    "Не удалось изменить статус этого приёма.");
         return response;
     }
 }

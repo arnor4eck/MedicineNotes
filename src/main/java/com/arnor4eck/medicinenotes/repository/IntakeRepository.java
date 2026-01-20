@@ -28,4 +28,14 @@ public interface IntakeRepository extends JpaRepository<Intake,Long> {
     int setStatus(@Param("id") long id,
                   @Param("status") String status,
                   @Param("email") String email);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE intakes AS i SET status = 'DONE', adoptedIn = NOW()\n" +
+            "WHERE id = :id AND EXISTS(SELECT 1 FROM intakes AS i\n" +
+            "    JOIN templates AS t ON t.id = i.template_id\n" +
+            "    JOIN public.users AS u on u.id = t.user_id\n" +
+            "    WHERE u.email = :email  AND i.id = :id)", nativeQuery = true)
+    int setDone(@Param("id") long id,
+                @Param("email") String email);
 }
