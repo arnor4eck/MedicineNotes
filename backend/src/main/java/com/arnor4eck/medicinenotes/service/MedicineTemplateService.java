@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,15 +73,18 @@ public class MedicineTemplateService {
                 .build());
 
         // TODO проработать систему с отрезочным созданием через Scheduler
-        List<Intake> futureIntakes = LocalDate.now().datesUntil(request.until())
-                .map(date ->
+        List<LocalDate> datesOfIntakes = LocalDate.now().datesUntil(request.until()).toList();
+        List<Intake> futureIntakes = new ArrayList<>(datesOfIntakes.size() * request.quantityPerDay());
+
+        for(LocalDate date : datesOfIntakes)
+            for(int i = 0; i < request.quantityPerDay(); i++)
+                futureIntakes.add(
                     Intake.builder()
                             .template(template)
                             .adoptedIn(null)
                             .status(IntakesStatus.PENDING)
                             .shouldAdoptedIn(date)
-                            .build()
-                ).toList();
+                            .build());
 
         intakeRepository.saveAll(futureIntakes);
 
