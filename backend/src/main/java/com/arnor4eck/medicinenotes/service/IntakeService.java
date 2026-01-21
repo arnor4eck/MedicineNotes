@@ -1,17 +1,19 @@
 package com.arnor4eck.medicinenotes.service;
 
 import com.arnor4eck.medicinenotes.entity.Intake;
+import com.arnor4eck.medicinenotes.entity.IntakesStatus;
 import com.arnor4eck.medicinenotes.repository.IntakeRepository;
 import com.arnor4eck.medicinenotes.util.dto.IntakeDto;
 import com.arnor4eck.medicinenotes.util.exception.not_found.IntakeNotFoundException;
-import com.arnor4eck.medicinenotes.util.response.ExceptionResponse;
+import com.arnor4eck.medicinenotes.util.request.ChangeIntakeStatusRequest;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -23,12 +25,9 @@ public class IntakeService {
 
     public IntakeDto getIntakeByIdWithCreator(long id,
                                    String email){
-        Intake intake = intakeRepository.findById(id)
-                .orElseThrow(() -> new IntakeNotFoundException("Факта приема препарата с заданным ID не найдено"));
+        Intake intake = this.getIntakeById(id);
 
-        if(!intake.getTemplate().getCreator().getEmail().equals(email))
-            throw new ResponseStatusException(HttpStatusCode.valueOf(403),
-                    "У вас нет доступа к этому ресурсу.");
+        checkIsIntakeOwner(intake, email);
 
         return IntakeDto.fromEntity(intake);
     }
@@ -48,16 +47,38 @@ public class IntakeService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public ExceptionResponse changeIntakeStatus(long id, String status, String email){
-        ExceptionResponse response;
+    public IntakeDto changeIntakeStatus(long id,
+                                         ChangeIntakeStatusRequest request,
+                                         String email){
+        Intake intake = this.getIntakeById(id);
+        IntakesStatus status = IntakesStatus.valueOf(request.status());
 
-        if((status.equalsIgnoreCase("done") && intakeRepository.setDone(id, email) == 1) ||
-                intakeRepository.setStatus(id, status, email) == 1)
-            response = new ExceptionResponse(HttpStatus.ACCEPTED.value(),
-                    "Статус приёма успешно изменён");
-        else
-            response = new ExceptionResponse(HttpStatus.BAD_REQUEST.value(),
-                    "Не удалось изменить статус этого приёма.");
-        return response;
+        if(intake.getStatus() == status ||
+                intake.getStatus() != IntakesStatus.PENDING)
+            return IntakeDto.fromEntity(intake);
+
+        checkIsIntakeOwner(intake, email);
+
+        intake.setStatus(status);
+
+        if(status == IntakesStatus.DONE)
+            intake.setAdoptedIn(LocalDateTime.now(ZoneId.of("UTC")));
+
+        intakeRepository.save(intake);
+
+        return IntakeDto.fromEntity(intake);
+    }
+
+    private Intake getIntakeById(long id){
+        return intakeRepository.findById(id)
+                .orElseThrow(() -> new IntakeNotFoundException("Факта приема препарата с заданным ID не найдено"));
+    }
+
+    private void checkIsIntakeOwner(Intake intake,
+                                    String email){
+        if(!intake.getTemplate().getCreator().getEmail().equals(email))
+            throw new ResponseStatusException(HttpStatusCode.valueOf(403),
+                    "У вас нет доступа к этому ресурсу.");
+
     }
 }
