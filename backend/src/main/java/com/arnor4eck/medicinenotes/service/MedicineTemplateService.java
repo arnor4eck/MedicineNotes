@@ -46,7 +46,7 @@ public class MedicineTemplateService {
         return template;
     }
 
-    public void create(CreateTemplateRequest request,
+    public MedicineTemplate create(CreateTemplateRequest request,
                        String creatorEmail) {
 
         if(request.quantityPerDay() > limitsConfig.getMaxTimesADay())
@@ -83,11 +83,13 @@ public class MedicineTemplateService {
                 ).toList();
 
         intakeRepository.saveAll(futureIntakes);
+
+        return template;
     }
 
     public Collection<MedicineTemplateDto> getAllUserTemplates(String email) {
         return templateRepository.findByCreatorEmail(email)
-                .stream().map(MedicineTemplateDto::getMedicineTemplateDto)
+                .stream().map(MedicineTemplateDto::fromEntity)
                 .collect(Collectors.toUnmodifiableList());
     }
 }

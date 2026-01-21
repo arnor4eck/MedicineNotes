@@ -6,6 +6,7 @@ import com.arnor4eck.medicinenotes.util.request.CreateTemplateRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,15 +23,17 @@ public class MedicineTemplateController {
     public MedicineTemplateDto getTemplateById(@PathVariable long id,
                                                @AuthenticationPrincipal String email) {
         return MedicineTemplateDto
-                .getMedicineTemplateDto(
+                .fromEntity(
                         templateService.getTemplateByIdCreator(id, email));
     }
 
     @PostMapping("/create")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createTemplate(@RequestBody @Valid CreateTemplateRequest request,
+    public ResponseEntity<MedicineTemplateDto> createTemplate(@RequestBody @Valid CreateTemplateRequest request,
                                                @AuthenticationPrincipal String email){
-        templateService.create(request, email);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(MedicineTemplateDto
+                        .fromEntity(templateService.create(request, email)));
     }
 
     @GetMapping("/my")

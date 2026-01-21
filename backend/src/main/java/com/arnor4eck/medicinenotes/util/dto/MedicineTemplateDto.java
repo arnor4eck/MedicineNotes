@@ -8,7 +8,7 @@ public record MedicineTemplateDto(long id, String name,
                                   String description, long quantityPerDay,
                                   LocalDate until) {
 
-    public static MedicineTemplateDto getMedicineTemplateDto(MedicineTemplate medicineTemplate) {
+    public static MedicineTemplateDto fromEntity(MedicineTemplate medicineTemplate) {
         return new MedicineTemplateDto(medicineTemplate.getId(),
                 medicineTemplate.getName(),
                 medicineTemplate.getDescription(),
