@@ -28,8 +28,6 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
 
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -70,10 +68,6 @@ public class SecurityConfig {
                                 "/**/user/authentication").permitAll()
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling(handle -> {
-                    handle
-                            .authenticationEntryPoint(jwtAuthenticationEntryPoint);
-                })
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
