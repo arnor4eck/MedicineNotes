@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from "../service/authService.ts";
+import { authService } from "../../service/authService.ts";
 import './AuthPage.css'
 
 const AuthPage = () => {
@@ -30,7 +30,7 @@ const AuthPage = () => {
     };
 
     return (
-        <div className='bg'>
+        <div className='bg bg_auth'>
             <form onSubmit={handleSubmit} className="login-form">
                 <p>Вход в систему</p>
 
