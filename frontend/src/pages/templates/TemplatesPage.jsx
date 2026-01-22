@@ -29,7 +29,6 @@ const TemplatesPage = () => {
         fetchData();
     }, []);
 
-    // Определяем класс в зависимости от количества элементов
     const getContainerClass = () => {
         if (templates.length <= 2) {
             return 'templates_container center-items';
@@ -64,6 +63,7 @@ const TemplatesPage = () => {
                         </div>
                     </div>
                 ) : (
+                    <div>
                     <ul className={getContainerClass()}>
                         {templates.map((template) => (
                             <li key={template.id}>
@@ -75,6 +75,14 @@ const TemplatesPage = () => {
                             </li>
                         ))}
                     </ul>
+                    <div className="center-items">
+                            <button
+                                className="create-btn"
+                                onClick={() => navigate('/templates/create')}>
+                            + Создать шаблон
+                            </button>
+                    </div>
+                </div>
                 )}
             </div>
         </div>
