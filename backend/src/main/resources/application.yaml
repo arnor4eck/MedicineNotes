@@ -9,7 +9,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
@@ -22,7 +22,7 @@ logging:
     org.springframework.transaction: DEBUG
 
 jwt:
-  lifetime: 300000
+  lifetime: 3600000
   secret: testfkwofnasjfnueh83nd8274hf8efnw8eufnc8j4w9ncfh987sh84hn8c5h998aewhnf8choeg
 
 limits:
