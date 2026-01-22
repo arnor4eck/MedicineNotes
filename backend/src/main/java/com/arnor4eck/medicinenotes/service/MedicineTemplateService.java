@@ -50,6 +50,13 @@ public class MedicineTemplateService {
     public MedicineTemplate create(CreateTemplateRequest request,
                        String creatorEmail) {
 
+        if (!request.until().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException(
+                    "Дата 'до' должна быть в будущем. " +
+                            request.until() + " <= " + LocalDate.now()
+            );
+        }
+
         if(request.quantityPerDay() > limitsConfig.getMaxTimesADay())
             throw new LimitExceededException("Максимум %s раз в день."
                             .formatted(limitsConfig.getMaxTimesADay()));
