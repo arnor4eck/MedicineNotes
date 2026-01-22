@@ -4,7 +4,7 @@ import type {Intake} from "../types/types.ts";
 const INTAKE_URL = "/v1/intake"
 
 class IntakeService {
-    async getAllUserIntakes(date? : string): Promise<Intake[]> {
+    async getAllUserIntakes(date : string | null): Promise<Intake[]> {
         try {
             const url = `${INTAKE_URL}/my${date ? `?date=${date}` : ''}`;
 
@@ -16,7 +16,7 @@ class IntakeService {
         }
     }
 
-    async changeIntakeStatus(id : number,
+    async changeIntakeStatus(id : string,
                              status : string): Promise<Intake> {
         try {
             const request = {
@@ -31,7 +31,7 @@ class IntakeService {
         }
     }
 
-    async getMedicineIntakeById(id: number): Promise<Intake> {
+    async getMedicineIntakeById(id: string): Promise<Intake> {
         try {
             const res = await api.get<Intake>(INTAKE_URL + `/${id}`);
             return res.data;

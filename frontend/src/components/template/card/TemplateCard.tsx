@@ -1,8 +1,16 @@
 import './TemplateCard.css'
 import {useNavigate} from "react-router-dom";
 
-export default function TemplateCard({id, name, until}){
+interface TemplateCardProps {
+    id: number;
+    name: string;
+    until: string;
+}
+
+export default function TemplateCard(props : TemplateCardProps){
     const navigate = useNavigate();
+
+    const { id, name, until} = props;
 
     return(
       <article className='template-card'>

@@ -1,10 +1,19 @@
 import './IntakeCard.css'
 import { useNavigate } from "react-router-dom";
 
-export default function IntakeCard({id, name, status, date}){
+interface IntakeCardProps {
+    id: number;
+    name: string;
+    status: string;
+    date: string;
+}
+
+export default function IntakeCard(props: IntakeCardProps){
     const navigate = useNavigate();
 
-    const getStatusInfo = (status) => {
+    const { id, name, status, date } = props;
+
+    const getStatusInfo = (status : string) => {
         switch (status) {
             case 'PENDING':
                 return 'Ожидание';

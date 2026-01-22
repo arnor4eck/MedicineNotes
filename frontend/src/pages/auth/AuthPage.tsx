@@ -2,27 +2,28 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from "../../service/authService.ts";
 import './AuthPage.css'
+import type {ApiError} from "../../types/apiError.ts";
 
-const AuthPage = () => {
+export default function AuthPage(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError('');
 
         try {
-            const response = await authService.login({ email, password });
+            await authService.login({ email, password });
             setTimeout(() => {
                 navigate('/templates', { replace: true });
             }, 100);
 
         } catch (error) {
-            setError(error.messages);
+            setError((error as ApiError).messages.join(','));
         } finally {
             setLoading(false);
         }
@@ -72,5 +73,3 @@ const AuthPage = () => {
         </div>
     );
 };
-
-export default AuthPage;

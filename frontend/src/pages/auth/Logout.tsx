@@ -8,4 +8,5 @@ export default function Logout(){
         navigate('/', { replace: true });
     }, 100);
 
+    return null;
 }

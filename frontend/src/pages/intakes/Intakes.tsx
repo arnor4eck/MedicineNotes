@@ -1,29 +1,33 @@
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {intakeService} from "../../service/intakeService.js";
 import {useEffect, useState} from "react";
-import Header from "../../components/header/Header.jsx";
+import Header from "../../components/header/Header.tsx";
 import './Intakes.css'
-import IntakeCard from "../../components/intake/card/IntakeCard.jsx";
+import type {Intake} from "../../types/types.ts";
+import IntakeCard from "../../components/intake/card/IntakeCard.tsx";
+import type {ApiError} from "../../types/apiError.ts";
 
 export default function Intakes() {
-    const [searchParams, setSearchParams] = useSearchParams()
+    const [searchParams] = useSearchParams()
     const [loading, setLoading] = useState(true);
-    const [intakes, setIntakes] = useState([]);
+    const [intakes, setIntakes] = useState<Intake[]>([]);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const date = searchParams.get('date');
+
                 setLoading(true);
 
-                const intakesData = await intakeService.getAllUserIntakes(searchParams.get('date'));
+                const intakesData = await intakeService.getAllUserIntakes(date);
 
                 setIntakes(intakesData);
                 setError('');
             } catch (error) {
                 console.error('Ошибка загрузки:', error);
-                setError(error.messages);
+                setError((error as ApiError).messages.join('\n'));
             } finally {
                 setLoading(false);
             }

@@ -1,26 +1,30 @@
 import {useEffect, useState} from "react";
-import Header from "../../components/header/Header.jsx";
-import {useNavigate, useParams} from "react-router-dom";
+import Header from "../../components/header/Header.tsx";
+import {useParams} from "react-router-dom";
 import './IntakeDetails.css'
 import {intakeService} from "../../service/intakeService.js";
+import type {ApiError} from "../../types/apiError.ts";
+import type {Intake} from "../../types/types.ts";
 
 export default function TemplateDetail(){
     const [loading, setLoading] = useState(true);
-    const [intake, setIntake] = useState({});
+    const [intake, setIntake] = useState<Intake>({} as Intake);
     const [error, setError] = useState('');
-    const navigate = useNavigate();
     const { id } = useParams();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                if(!id)
+                    return;
+
                 setLoading(true);
                 const intakeData = await intakeService.getMedicineIntakeById(id);
 
                 setIntake(intakeData);
 
             } catch (error) {
-                setError(error.messages);
+                setError((error as ApiError).messages.join('\n'));
             } finally {
                 setLoading(false);
             }
@@ -29,7 +33,7 @@ export default function TemplateDetail(){
         fetchData();
     }, []);
 
-    const getStatusInfo = (status) => {
+    const getStatusInfo = (status : string) => {
         switch (status) {
             case 'PENDING':
                 return 'Ожидание';
@@ -44,6 +48,9 @@ export default function TemplateDetail(){
 
     const handleDone = async () => {
         try {
+            if(!id)
+                return;
+
             setLoading(true);
             setError('');
             const newRes = await intakeService.changeIntakeStatus(id, 'DONE');

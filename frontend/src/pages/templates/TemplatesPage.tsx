@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from "../../components/header/Header.jsx";
+import Header from "../../components/header/Header.tsx";
 import { medicineTemplateService } from "../../service/medicineTemplateService.js";
 import './TemplatesPage.css';
-import TemplateCard from "../../components/template/card/TemplateCard.jsx";
+import TemplateCard from "../../components/template/card/TemplateCard.tsx";
+import type {MedicineTemplate} from "../../types/types.ts";
 
 const TemplatesPage = () => {
     const [loading, setLoading] = useState(true);
-    const [templates, setTemplates] = useState([]);
+    const [templates, setTemplates] = useState<MedicineTemplate[]>([]);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 

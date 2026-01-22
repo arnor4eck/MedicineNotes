@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CreateTemplate.css'
 import {medicineTemplateService} from "../../service/medicineTemplateService.js";
+import type {ApiError} from "../../types/apiError.ts";
 
 const CreateTemplatePage = () => {
     const [name, setName] = useState('');
@@ -12,13 +13,13 @@ const CreateTemplatePage = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError('');
 
         try {
-            const response = await medicineTemplateService.createMedicineTemplate({
+            await medicineTemplateService.createMedicineTemplate({
                 name, description, quantityPerDay, until
             });
             setTimeout(() => {
@@ -26,7 +27,7 @@ const CreateTemplatePage = () => {
             }, 100);
 
         } catch (error) {
-            setError(error.messages);
+            setError((error as ApiError).messages.join('\n'));
         } finally {
             setLoading(false);
         }

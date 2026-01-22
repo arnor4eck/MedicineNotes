@@ -24,7 +24,7 @@ class MedicineTemplateService {
         }
     }
 
-    async getMedicineTemplateById(id: number): Promise<MedicineTemplate> {
+    async getMedicineTemplateById(id: string): Promise<MedicineTemplate> {
         try {
             const res = await api.get<MedicineTemplate>(TEMPLATE_URL + `/${id}`);
             return res.data;

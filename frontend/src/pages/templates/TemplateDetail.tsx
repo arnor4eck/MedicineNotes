@@ -1,25 +1,30 @@
-import {medicineTemplateService} from "../../service/medicineTemplateService.js";
+import {medicineTemplateService} from "../../service/medicineTemplateService.ts";
 import {useEffect, useState} from "react";
-import Header from "../../components/header/Header.jsx";
+import Header from "../../components/header/Header.tsx";
 import {useParams} from "react-router-dom";
 import './TemplateDetail.css'
+import type {ApiError} from "../../types/apiError.ts";
+import type {MedicineTemplate} from "../../types/types.ts";
 
 export default function TemplateDetail(){
-    const [loading, setLoading] = useState(true);
-    const [template, setTemplate] = useState({});
-    const [error, setError] = useState('');
-    const { id } = useParams();
+    const [loading, setLoading] = useState<boolean>(true);
+    const [template, setTemplate] = useState<MedicineTemplate>({} as MedicineTemplate);
+    const [error, setError] = useState<string>('');
+    const { id } = useParams<{ id: string }>();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                if(!id)
+                    return;
+
                 setLoading(true);
                 const templateData = await medicineTemplateService.getMedicineTemplateById(id);
 
                 setTemplate(templateData);
 
             } catch (error) {
-                setError(error.messages);
+                setError((error as ApiError).messages.join('\n'));
             } finally {
                 setLoading(false);
             }

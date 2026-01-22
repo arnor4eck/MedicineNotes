@@ -1,12 +1,12 @@
 import './App.css'
-import AuthPage from "./pages/auth/AuthPage.jsx"
-import Logout from "./pages/auth/Logout.jsx"
-import TemplatesPage from "./pages/templates/TemplatesPage.jsx"
-import TemplateDetail from "./pages/templates/TemplateDetail.jsx"
-import CreateTemplate from "./pages/templates/CreateTemplate.jsx"
-import Intakes from './pages/intakes/Intakes.jsx'
-import IntakeDetails from './pages/intakes/IntakeDetails.jsx'
-import Main from './pages/Main.jsx'
+import AuthPage from "./pages/auth/AuthPage.tsx"
+import Logout from "./pages/auth/Logout.tsx"
+import TemplatesPage from "./pages/templates/TemplatesPage.tsx"
+import TemplateDetail from "./pages/templates/TemplateDetail.tsx"
+import CreateTemplate from "./pages/templates/CreateTemplate.tsx"
+import Intakes from './pages/intakes/Intakes.tsx'
+import IntakeDetails from './pages/intakes/IntakeDetails.tsx'
+import Main from './pages/Main.tsx'
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 function App() {
