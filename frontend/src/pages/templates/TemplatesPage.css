@@ -1,0 +1,19 @@
+.templates__bg {
+    display: grid;
+    width: 100%;
+}
+
+.templates__bg ul {
+    margin: 0;
+    padding: 20px;
+    list-style: none;
+}
+
+.templates_container{
+    display: grid;
+    gap: 10px;
+}
+
+.templates__bg ul li {
+    width: 100%;
+}
