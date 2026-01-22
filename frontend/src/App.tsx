@@ -1,5 +1,7 @@
 import './App.css'
-import AuthPage from "./pages/AuthPage.jsx"
+import AuthPage from "./pages/auth/AuthPage.jsx"
+import Logout from "./pages/auth/Logout.jsx"
+import TemplatesPage from "./pages/templates/TemplatesPage.jsx"
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 function App() {
@@ -20,6 +22,20 @@ function App() {
                   path="/auth"
                   element={
                     <AuthPage />
+                  }
+              />
+
+              <Route
+                  path="/templates"
+                  element={
+                      <TemplatesPage />
+                  }
+              />
+
+              <Route
+                  path="/logout"
+                  element={
+                      <Logout />
                   }
               />
           </Routes>
