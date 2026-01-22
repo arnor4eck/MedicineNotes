@@ -3,6 +3,9 @@ import AuthPage from "./pages/auth/AuthPage.jsx"
 import Logout from "./pages/auth/Logout.jsx"
 import TemplatesPage from "./pages/templates/TemplatesPage.jsx"
 import TemplateDetail from "./pages/templates/TemplateDetail.jsx"
+import CreateTemplate from "./pages/templates/CreateTemplate.jsx"
+import Intakes from './pages/intakes/Intakes.jsx'
+import IntakeDetails from './pages/intakes/IntakeDetails.jsx'
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 function App() {
@@ -12,14 +15,15 @@ function App() {
           <Routes>
               <Route
                   path="/"
-                  /*element={
-                      isAuthenticated ?
-                          <Navigate to="/objects" replace /> :
-                          <Navigate to="/auth" replace />
-                  }*/
+              />
+
+              <Route
+                path="intakes"
+                element={<Intakes />}
               />
 
               <Route path="/templates/:id" element={<TemplateDetail />} />
+              <Route path="/intakes/:id" element={<IntakeDetails />} />
 
               <Route
                   path="/auth"
@@ -33,6 +37,13 @@ function App() {
                   element={
                       <TemplatesPage />
                   }
+              />
+
+              <Route
+                path="/templates/create"
+                element={
+                  <CreateTemplate />
+                }
               />
 
               <Route
