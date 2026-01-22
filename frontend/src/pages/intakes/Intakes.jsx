@@ -16,7 +16,9 @@ export default function Intakes() {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const intakesData = await intakeService.getAllUserIntakes(searchParams.get('data'));
+
+                const intakesData = await intakeService.getAllUserIntakes(searchParams.get('date'));
+
                 setIntakes(intakesData);
                 setError('');
             } catch (error) {

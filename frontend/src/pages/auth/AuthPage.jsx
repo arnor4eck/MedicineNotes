@@ -18,7 +18,6 @@ const AuthPage = () => {
         try {
             const response = await authService.login({ email, password });
             setTimeout(() => {
-                console.log('Navigating');
                 navigate('/templates', { replace: true });
             }, 100);
 

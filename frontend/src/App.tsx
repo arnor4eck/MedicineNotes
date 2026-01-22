@@ -24,6 +24,7 @@ function App() {
 
               <Route path="/templates/:id" element={<TemplateDetail />} />
               <Route path="/intakes/:id" element={<IntakeDetails />} />
+              <Route path="/intakes/:id/done" element={<IntakeDetails />} />
 
               <Route
                   path="/auth"
