@@ -8,6 +8,7 @@ import com.arnor4eck.medicinenotes.util.validation.Status;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,9 @@ public class IntakeController {
 
     @GetMapping("/my")
     public Collection<IntakeDto> getAllIntakesByCreatorEmail(@AuthenticationPrincipal String email,
-                                                          @RequestParam(value = "date", required = false) LocalDate date){
+                                                          @RequestParam(required = false)
+                                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  LocalDate date){
+        System.out.println(date);
         return intakeService.getAllIntakesByCreatorAndAdoptedDate(email, date);
     }
 
