@@ -6,6 +6,7 @@ import TemplateDetail from "./pages/templates/TemplateDetail.jsx"
 import CreateTemplate from "./pages/templates/CreateTemplate.jsx"
 import Intakes from './pages/intakes/Intakes.jsx'
 import IntakeDetails from './pages/intakes/IntakeDetails.jsx'
+import Main from './pages/Main.jsx'
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Routes>
               <Route
                   path="/"
+                  element={<Main />}
               />
 
               <Route
