@@ -1,7 +1,5 @@
 #root {
-      max-width: 1280px;
       margin: 0 auto;
-      padding: 2rem;
       text-align: center;
     --primary-color: #5c757d;
     --hover-color: #d6d6d6;
