@@ -4,13 +4,10 @@ import {authService} from "../../service/authService.ts";
 
 export default function Header() {
     const location = useLocation();
-    const nowDate = new Date();
-
-    const req = `${nowDate.getFullYear()}-${String(nowDate.getMonth() + 1).padStart(2, '0')}-${String(nowDate.getDate()).padStart(2, '0')}`;
 
     const navItems = [
         { path: '/templates', label: 'Шаблоны' },
-        { path: '/intakes?date=' + req, label: 'Сегодняшние приёмы' },
+        { path: '/intakes', label: 'Приёмы' },
         authService.isAuthenticated() ? { path:  '/logout', label: 'Выйти' }
             : { path: 'auth', label: 'Авторизоваться' }
     ];
