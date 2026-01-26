@@ -5,6 +5,7 @@ import './IntakeDetails.css'
 import {intakeService} from "../../service/intakeService.js";
 import type {ApiError} from "../../types/apiError.ts";
 import type {Intake} from "../../types/types.ts";
+import {statusService} from "../../service/statusService.ts";
 
 export default function TemplateDetail(){
     const [loading, setLoading] = useState(true);
@@ -31,20 +32,7 @@ export default function TemplateDetail(){
         };
 
         fetchData();
-    }, []);
-
-    const getStatusInfo = (status : string) => {
-        switch (status) {
-            case 'PENDING':
-                return 'Ожидание';
-            case 'DONE':
-                return 'Принято';
-            case 'SKIPPED':
-                return 'Пропущено';
-            default:
-                return 'Неизвестно';
-        }
-    };
+    }, [id]);
 
     const handleDone = async () => {
         try {
@@ -84,7 +72,7 @@ export default function TemplateDetail(){
                             <h3 className="intake_card__name">{intake.name}</h3>
                         </div>
 
-                        {getStatusInfo(intake.status) === 'Ожидание' && <div className='intake_card--btn-cnt'>
+                        {statusService.getStatusInfo(intake.status) === 'Ожидание' && <div className='intake_card--btn-cnt'>
                             <button className='intake_card--btn' onClick={handleDone}>Поставить отметку о приёме</button>
                         </div>}
 
@@ -106,7 +94,7 @@ export default function TemplateDetail(){
                             <div className="intake_card__info-item">
                                 <span className="intake_card__info-label">Статус</span>
                                 <span className="intake_card__info-value">
-                                        {getStatusInfo(intake.status)}
+                                        {statusService.getStatusInfo(intake.status)}
                                     </span>
                             </div>
                         </div>
