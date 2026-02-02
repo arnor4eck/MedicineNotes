@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://postgres:5432/medicinenotes  # Внутри Docker сети
-    username: postgres
-    password: postgres
+    username: app_admin
+    password: AdminPass123!
     driver-class-name: org.postgresql.Driver
 
   jpa:
