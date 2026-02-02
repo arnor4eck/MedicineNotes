@@ -3,7 +3,7 @@ spring:
     name: MedicineNotes
   datasource:
     url: jdbc:postgresql://localhost:5433/MedicineNotes
-    username: admin
+    username: postgres
     password: secret
 
   jpa:
