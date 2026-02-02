@@ -13,12 +13,13 @@ RUN gradle dependencies --no-daemon
 # исходный код
 COPY src src
 
-
 RUN gradle build --no-daemon -x test
 
 FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
+
+ENV SPRING_PROFILES_ACTIVE=docker
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

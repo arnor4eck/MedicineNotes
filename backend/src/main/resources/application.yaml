@@ -1,18 +1,6 @@
 spring:
   application:
     name: MedicineNotes
-  datasource:
-    url: jdbc:postgresql://localhost:5433/MedicineNotes
-    username: postgres
-    password: secret
-
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    show-sql: true
 
 logging:
   level:
@@ -20,6 +8,10 @@ logging:
     org.hibernate.type.descriptor.sql: TRACE
     org.springframework.jdbc.core: DEBUG
     org.springframework.transaction: DEBUG
+    org.springframework.boot.autoconfigure: DEBUG
+    org.springframework.jdbc.datasource: DEBUG
+    org.springframework.orm.jpa: DEBUG
+    com.zaxxer.hikari: DEBUG
 
 jwt:
   lifetime: 3600000
