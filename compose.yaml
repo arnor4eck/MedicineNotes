@@ -4,10 +4,10 @@ services:
     container_name: postgres-db
     environment:
       - 'POSTGRES_DB=medicinenotes'
-      - 'POSTGRES_PASSWORD=secret'
+      - 'POSTGRES_PASSWORD=postgres'
       - 'POSTGRES_USER=postgres'
     ports:
-      - '5433:5432'
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:
