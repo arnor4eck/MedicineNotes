@@ -1,12 +1,14 @@
 package com.arnor4eck.medicinenotes.repository;
 
 import com.arnor4eck.medicinenotes.entity.Intake;
+import com.arnor4eck.medicinenotes.util.statistics.IntakeStatisticsUnit;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 public interface IntakeRepository extends JpaRepository<Intake,Long> {
@@ -24,4 +26,15 @@ public interface IntakeRepository extends JpaRepository<Intake,Long> {
             "WHERE shouldAdoptedin < (CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Moscow')::date\n" +
             "AND status = 'PENDING'", nativeQuery = true)
     int setSkipped();
+
+    @Query(value = """
+    SELECT t.name, i.status, COUNT(*) FROM intakes AS i 
+    JOIN templates AS t ON t.id = i.template_id 
+    JOIN users AS u ON t.user_id = u.id
+    WHERE shouldadoptedin=:date AND u.email = :email
+    GROUP BY ROLLUP (t.name, status) 
+    ORDER BY t.name;
+    """, nativeQuery = true)
+    Collection<IntakeStatisticsUnit> getIntakeStatisticsByDate(@Param("date") LocalDate date,
+                                                               @Param("email") String email);
 }

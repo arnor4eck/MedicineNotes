@@ -1,0 +1,29 @@
+package com.arnor4eck.medicinenotes.controller;
+
+import com.arnor4eck.medicinenotes.service.StatisticsService;
+import com.arnor4eck.medicinenotes.util.statistics.IntakeStatisticsUnit;
+import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
+import java.util.Collection;
+
+@RestController
+@AllArgsConstructor
+@RequestMapping("/api/v1/statistics")
+public class StatisticsController {
+
+    private final StatisticsService statisticsService;
+
+    @GetMapping("/intakes")
+    public Collection<IntakeStatisticsUnit> getIntakeStatisticsByDate(@RequestParam
+                                                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                                                      @AuthenticationPrincipal String email){
+        return statisticsService.getIntakeStatisticsByDateAndEmail(date, email);
+    }
+}
