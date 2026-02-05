@@ -31,26 +31,6 @@
     flex-wrap: wrap;
 }
 
-.loading {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 400px;
-    font-size: 1.2rem;
-    color: #666;
-}
-
-.empty-state {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    text-align: center;
-    padding: 40px;
-}
-
 .group {
     margin-bottom: 15px;
     width: 100%;

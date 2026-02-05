@@ -7,6 +7,50 @@
     --default-border-radius: 10px;
 }
 
+.center_container{
+    display: flex;
+    justify-content: center;
+}
+
+
+.card__button {
+    padding: 8px 16px;
+    border-radius: var(--default-border-radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.card__button--primary {
+    background: var(--primary-color);
+}
+
+.card__button--primary:hover {
+    background: #495d58;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+    padding: 40px;
+}
+
+.loading {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    font-size: 1.2rem;
+    color: #666;
+}
+
 .bg {
     min-height: 100vh;
     min-width: 100vw;

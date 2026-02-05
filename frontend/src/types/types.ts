@@ -41,3 +41,15 @@ export interface AuthenticationRequest {
 export interface AuthenticationResponse {
     token: string;
 }
+
+// Статистика
+
+export interface TemplateStatisticsUnit {
+    shouldAdoptedIn: string;
+    doneCount: number;
+}
+
+export interface FullTemplateStatistics {
+    templateStatistics: TemplateStatisticsUnit[];
+    maxTimesPerDay: number;
+}

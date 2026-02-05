@@ -1,0 +1,52 @@
+.vertical-progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: sans-serif;
+    margin: 10px;
+    position: relative;
+}
+
+.vertical-progress-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.progress-background {
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid #ccc;
+}
+.progress-text {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 14px;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.progress-filled {
+    position: absolute;
+    border-radius: 4px;
+    transition: height 0.3s ease;
+}
+
+.progress-date {
+    margin-top: 10px;
+    font-size: 12px;
+    align-items: center;
+    background: var(--primary-color);
+    padding: 5px;
+    border-radius: var(--default-border-radius);
+}
+
+.progress-values {
+    margin-top: 5px;
+    font-size: 11px;
+    color: #888;
+}

@@ -1,7 +1,7 @@
 import {medicineTemplateService} from "../../service/medicineTemplateService.ts";
 import {useEffect, useState} from "react";
 import Header from "../../components/header/Header.tsx";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import './TemplateDetail.css'
 import type {ApiError} from "../../types/apiError.ts";
 import type {MedicineTemplate} from "../../types/types.ts";
@@ -10,6 +10,7 @@ export default function TemplateDetail(){
     const [loading, setLoading] = useState<boolean>(true);
     const [template, setTemplate] = useState<MedicineTemplate>({} as MedicineTemplate);
     const [error, setError] = useState<string>('');
+    const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
     useEffect(() => {
@@ -31,7 +32,7 @@ export default function TemplateDetail(){
         };
 
         fetchData();
-    }, []);
+    }, [id]);
 
     const isActive = new Date().setHours(0, 0, 0, 0) < new Date(template.until).setHours(0, 0, 0, 0);
 
@@ -72,6 +73,12 @@ export default function TemplateDetail(){
                                         {template.quantityPerDay} р.
                                     </span>
                                 </div>
+                            </div>
+                            <div className="template_card__buttons">
+                                <button style={{
+                                    width: `70%`,
+                                    marginBottom: `15px`
+                                }} className="card__button card__button--primary" onClick={() => navigate(`/statistics/templates/${id}`)}>Статистика</button>
                             </div>
                         </div>
                     </div>

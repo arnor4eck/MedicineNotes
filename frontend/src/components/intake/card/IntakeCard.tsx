@@ -33,7 +33,7 @@ export default function IntakeCard(props: IntakeCardProps){
           </div>
           <div className='intake-card__bottom'>
               <button onClick={() => navigate(`/intakes/${id}`)}
-                      className='intake-card__button intake-card__button--primary'> Подробнее</button>
+                      className='card__button card__button--primary'> Подробнее</button>
               <p className='intake-card__date'>{date}</p>
               <p className='intake-card__status'>{getStatusInfo(status)}</p>
           </div>
