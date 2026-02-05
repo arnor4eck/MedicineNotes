@@ -52,21 +52,3 @@ ul, li { list-style: none; }
     background: grey;
     border-radius: var(--default-border-radius);
 }
-
-.intake-card__button {
-    padding: 8px 16px;
-    border-radius: var(--default-border-radius);
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s ease;
-}
-
-.intake-card__button--primary {
-    background: var(--primary-color);
-}
-
-.intake-card__button--primary:hover {
-    background: #495d58;
-}

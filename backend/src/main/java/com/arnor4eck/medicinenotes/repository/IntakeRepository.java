@@ -2,6 +2,7 @@ package com.arnor4eck.medicinenotes.repository;
 
 import com.arnor4eck.medicinenotes.entity.Intake;
 import com.arnor4eck.medicinenotes.util.statistics.IntakeStatisticsUnit;
+import com.arnor4eck.medicinenotes.util.statistics.TemplateStatisticsUnit;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -37,4 +38,15 @@ public interface IntakeRepository extends JpaRepository<Intake,Long> {
     """, nativeQuery = true)
     Collection<IntakeStatisticsUnit> getIntakeStatisticsByDate(@Param("date") LocalDate date,
                                                                @Param("email") String email);
+
+    @Query(value = """
+    SELECT i.shouldadoptedin, COUNT(*) FILTER (WHERE i.status = 'DONE')
+    FROM intakes AS i
+    WHERE i.template_id = :template_id
+    GROUP BY (i.shouldadoptedin)
+    ORDER BY (i.shouldadoptedin)
+    LIMIT 5 OFFSET 5 * :offset;
+    """,  nativeQuery = true)
+    Collection<TemplateStatisticsUnit> getTemplateStatisticsOfDone(@Param("template_id") long templateId,
+                                                                   @Param("offset") int offsetWith5);
 }

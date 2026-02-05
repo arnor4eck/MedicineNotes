@@ -73,7 +73,7 @@ export default function TemplateDetail(){
                         </div>
 
                         {statusService.getStatusInfo(intake.status) === 'Ожидание' && <div className='intake_card--btn-cnt'>
-                            <button className='intake_card--btn' onClick={handleDone}>Поставить отметку о приёме</button>
+                            <button className='card__button card__button--primary' onClick={handleDone}>Поставить отметку о приёме</button>
                         </div>}
 
                         <div className="intake_card__info">

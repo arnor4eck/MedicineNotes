@@ -10,11 +10,6 @@
     width: 97%;
 }
 
-.center_container{
-    display: flex;
-    justify-content: center;
-}
-
 .intake_card:hover {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     transform: translateY(-4px);
@@ -65,12 +60,6 @@
 .intake_card--btn-cnt{
     display: flex;
     justify-content: center;
-}
-
-.intake_card--btn{
-    width: 70%;
-    color: black;
-    background: var(--primary-color);
 }
 
 @media (max-width: 480px) {

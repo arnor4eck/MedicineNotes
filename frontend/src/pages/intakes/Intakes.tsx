@@ -18,7 +18,7 @@ export default function Intakes() {
         const fetchData = async () => {
             try {
                 setLoading(true);
-
+                console.log(dateParam);
                 const intakesData = await intakeService.getAllUserIntakes(dateParam);
 
                 setIntakes(intakesData);
