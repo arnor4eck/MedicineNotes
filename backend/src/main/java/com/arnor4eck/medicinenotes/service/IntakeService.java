@@ -3,6 +3,7 @@ package com.arnor4eck.medicinenotes.service;
 import com.arnor4eck.medicinenotes.entity.Intake;
 import com.arnor4eck.medicinenotes.entity.IntakesStatus;
 import com.arnor4eck.medicinenotes.repository.IntakeRepository;
+import com.arnor4eck.medicinenotes.service.cache.CacheIntakeService;
 import com.arnor4eck.medicinenotes.util.dto.IntakeDto;
 import com.arnor4eck.medicinenotes.util.exception.not_found.IntakeNotFoundException;
 import com.arnor4eck.medicinenotes.util.request.ChangeIntakeStatusRequest;
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -23,9 +24,11 @@ public class IntakeService {
 
     private final IntakeRepository intakeRepository;
 
-    public IntakeDto getIntakeByIdWithCreator(long id,
+    private final CacheIntakeService cacheIntakeService;
+
+    public IntakeDto getIntakeByIdWithCreatorCheck(long id,
                                    String email){
-        Intake intake = this.getIntakeById(id);
+        Intake intake = getIntakeById(id);
 
         checkIsIntakeOwner(intake, email);
 
@@ -34,23 +37,22 @@ public class IntakeService {
 
     public Collection<IntakeDto> getAllIntakesByCreatorAndAdoptedDate(String email,
                                                                    LocalDate date){
-        Collection<Intake> intakes = intakeRepository.findAllByCreatorEmail(email);
+        Stream<Intake> intakes = intakeRepository.findAllByCreatorEmail(email).stream();
 
         if(date != null)
-            intakes = intakes.stream()
+            intakes = intakes
                     .filter(intake -> intake.getShouldAdoptedIn() != null &&
-                            intake.getShouldAdoptedIn().equals(date))
-                    .collect(Collectors.toUnmodifiableList());
+                            intake.getShouldAdoptedIn().equals(date));
 
-        return intakes.stream()
+        return intakes
                 .map(IntakeDto::fromEntity)
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
     }
 
     public IntakeDto changeIntakeStatus(long id,
                                          ChangeIntakeStatusRequest request,
                                          String email){
-        Intake intake = this.getIntakeById(id);
+        Intake intake = getIntakeById(id);
         IntakesStatus status = IntakesStatus.valueOf(request.status());
 
         if(intake.getStatus() == status ||
@@ -70,7 +72,7 @@ public class IntakeService {
     }
 
     private Intake getIntakeById(long id){
-        return intakeRepository.findById(id)
+        return cacheIntakeService.getIntakeById(id)
                 .orElseThrow(() -> new IntakeNotFoundException("Факта приема препарата с заданным ID не найдено"));
     }
 

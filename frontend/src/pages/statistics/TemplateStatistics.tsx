@@ -14,7 +14,7 @@ export default function TemplateStatistics() {
     const [loading, setLoading] = useState(true);
     const [templateStatistics, setTemplateStatistics] = useState<FullTemplateStatistics>({} as FullTemplateStatistics);
     const [offset, setOffset] = useState(0);
-    const [startDate, setStartDate] = useState<Date>(new Date());
+    const [startDate, setStartDate] = useState<Date>();
 
     useEffect(() => {
         const fetchData = async () =>{
@@ -25,7 +25,10 @@ export default function TemplateStatistics() {
                 setLoading(true);
                 const statisticsData = await statisticsService.getTemplateStatisticsByIdAndOffset(id, offset);
                 setTemplateStatistics(statisticsData);
-                console.log(statisticsData);
+
+                if(!startDate)
+                    setStartDate(new Date(statisticsData.templateStatistics[0].shouldAdoptedIn));
+
             } catch (error){
                 setError((error as ApiError).messages.join('\n'));
             } finally {
@@ -61,25 +64,28 @@ export default function TemplateStatistics() {
                                     setError('')
 
                                 setOffset(offset - 1);
-                                const newDate = new Date(startDate);
-                                newDate.setDate(newDate.getDate() - 5);
-                                setStartDate(newDate);
+                                if(startDate) {
+                                    const newDate = new Date(startDate);
+                                    newDate.setDate(newDate.getDate() - 5);
+                                    setStartDate(newDate);
+                                }
                             }}>
                             <b>&lt;</b>
                         </button>
 
                         <div className="date-buttons__date">
-                            {dateService.formatDate(startDate)} : {dateService.formatDate(new Date(startDate.getTime() + 5 * 24 * 60 * 60 * 1000))}
+                            {dateService.formatDate(startDate ?? new Date())} : {dateService.formatDate(startDate ? new Date(startDate.getTime() + 5 * 24 * 60 * 60 * 1000) : new Date())}
                         </div>
 
                         <button
                             className="date-buttons__button date-buttons__button__right"
                             onClick={() => {
                                 setOffset(offset + 1);
-                                const newDate = new Date(startDate);
-                                newDate.setDate(newDate.getDate() + 5);
-                                setStartDate(newDate);
-                                console.log(offset);
+                                if(startDate) {
+                                    const newDate = new Date(startDate);
+                                    newDate.setDate(newDate.getDate() + 5);
+                                    setStartDate(newDate);
+                                }
                             }}>
                             <b>&gt;</b>
                         </button>

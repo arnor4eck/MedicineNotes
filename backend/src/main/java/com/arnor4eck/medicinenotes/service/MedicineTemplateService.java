@@ -1,12 +1,13 @@
 package com.arnor4eck.medicinenotes.service;
 
-import com.arnor4eck.medicinenotes.config.LimitsConfig;
+import com.arnor4eck.medicinenotes.config.LimitsProperties;
 import com.arnor4eck.medicinenotes.entity.Intake;
 import com.arnor4eck.medicinenotes.entity.IntakesStatus;
 import com.arnor4eck.medicinenotes.entity.MedicineTemplate;
 import com.arnor4eck.medicinenotes.entity.User;
 import com.arnor4eck.medicinenotes.repository.IntakeRepository;
 import com.arnor4eck.medicinenotes.repository.TemplateRepository;
+import com.arnor4eck.medicinenotes.service.cache.CacheTemplateService;
 import com.arnor4eck.medicinenotes.util.dto.MedicineTemplateDto;
 import com.arnor4eck.medicinenotes.util.exception.illegal_argument.LimitExceededException;
 import com.arnor4eck.medicinenotes.util.exception.not_found.MedicineTemplateNotFoundException;
@@ -21,7 +22,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -33,11 +33,13 @@ public class MedicineTemplateService {
 
     private final UserDetailsService userDetailsService;
 
-    private final LimitsConfig limitsConfig;
+    private final LimitsProperties limitsProperties;
+
+    private final CacheTemplateService cacheTemplateService;
 
     public MedicineTemplate getTemplateByIdCreator(long id,
                                                    String email) {
-        MedicineTemplate template = templateRepository.findById(id)
+        MedicineTemplate template = cacheTemplateService.getTemplateById(id)
                 .orElseThrow(() ->new MedicineTemplateNotFoundException("Шаблон с заданным ID не найден."));
 
         if(!template.getCreator().getEmail().equals(email))
@@ -50,24 +52,23 @@ public class MedicineTemplateService {
     public MedicineTemplate create(CreateTemplateRequest request,
                        String creatorEmail) {
 
-        if (!request.until().isAfter(LocalDate.now())) {
+        if (!request.until().isAfter(LocalDate.now()))
             throw new IllegalArgumentException(
                     "Дата 'до' должна быть в будущем. " +
                             request.until() + " <= " + LocalDate.now()
             );
-        }
 
-        if(request.quantityPerDay() > limitsConfig.getMaxTimesADay())
+        if(request.quantityPerDay() > limitsProperties.getMaxTimesADay())
             throw new LimitExceededException("Максимум %s раз в день."
-                            .formatted(limitsConfig.getMaxTimesADay()));
+                            .formatted(limitsProperties.getMaxTimesADay()));
 
-        if(request.until().isAfter(LocalDate.now().plusDays(limitsConfig.getMaxDuration())))
+        if(request.until().isAfter(LocalDate.now().plusDays(limitsProperties.getMaxDuration())))
             throw new LimitExceededException("Максимальная продолжительность - %s дней."
-                            .formatted(limitsConfig.getMaxDuration()));
+                            .formatted(limitsProperties.getMaxDuration()));
 
-        if(templateRepository.countAllTemplatesByCreatorEmail(creatorEmail) > limitsConfig.getMaxTemplates())
+        if(templateRepository.countAllTemplatesByCreatorEmail(creatorEmail) > limitsProperties.getMaxTemplates())
             throw new LimitExceededException("Максимум можно создать %s шаблонов."
-                            .formatted(limitsConfig.getMaxTemplates()));
+                            .formatted(limitsProperties.getMaxTemplates()));
 
         User creator = (User) userDetailsService.loadUserByUsername(creatorEmail);
 
@@ -101,6 +102,6 @@ public class MedicineTemplateService {
     public Collection<MedicineTemplateDto> getAllUserTemplates(String email) {
         return templateRepository.findByCreatorEmail(email)
                 .stream().map(MedicineTemplateDto::fromEntity)
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
     }
 }

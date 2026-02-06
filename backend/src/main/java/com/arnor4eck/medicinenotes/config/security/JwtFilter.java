@@ -1,4 +1,4 @@
-package com.arnor4eck.medicinenotes.config;
+package com.arnor4eck.medicinenotes.config.security;
 
 import com.arnor4eck.medicinenotes.util.jwt.JwtAccessUtils;
 import jakarta.servlet.FilterChain;

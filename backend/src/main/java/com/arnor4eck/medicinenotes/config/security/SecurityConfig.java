@@ -1,4 +1,4 @@
-package com.arnor4eck.medicinenotes.config;
+package com.arnor4eck.medicinenotes.config.security;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
