@@ -29,3 +29,8 @@ limits:
   max-templates: 15
   max-duration: 90
   max-times-a-day: 18
+
+cache:
+  names:
+    - intake
+    - template

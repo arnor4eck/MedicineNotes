@@ -46,6 +46,10 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.13.0' // JWT
     implementation 'io.jsonwebtoken:jjwt-jackson:0.13.0' // JWT
 
+    // Cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+
     testImplementation 'com.h2database:h2'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
