@@ -1,6 +1,6 @@
 package com.arnor4eck.medicinenotes.service;
 
-import com.arnor4eck.medicinenotes.config.LimitsConfig;
+import com.arnor4eck.medicinenotes.config.LimitsProperties;
 import com.arnor4eck.medicinenotes.entity.Intake;
 import com.arnor4eck.medicinenotes.entity.IntakesStatus;
 import com.arnor4eck.medicinenotes.entity.MedicineTemplate;
@@ -33,7 +33,7 @@ public class MedicineTemplateService {
 
     private final UserDetailsService userDetailsService;
 
-    private final LimitsConfig limitsConfig;
+    private final LimitsProperties limitsProperties;
 
     public MedicineTemplate getTemplateByIdCreator(long id,
                                                    String email) {
@@ -57,17 +57,17 @@ public class MedicineTemplateService {
             );
         }
 
-        if(request.quantityPerDay() > limitsConfig.getMaxTimesADay())
+        if(request.quantityPerDay() > limitsProperties.getMaxTimesADay())
             throw new LimitExceededException("Максимум %s раз в день."
-                            .formatted(limitsConfig.getMaxTimesADay()));
+                            .formatted(limitsProperties.getMaxTimesADay()));
 
-        if(request.until().isAfter(LocalDate.now().plusDays(limitsConfig.getMaxDuration())))
+        if(request.until().isAfter(LocalDate.now().plusDays(limitsProperties.getMaxDuration())))
             throw new LimitExceededException("Максимальная продолжительность - %s дней."
-                            .formatted(limitsConfig.getMaxDuration()));
+                            .formatted(limitsProperties.getMaxDuration()));
 
-        if(templateRepository.countAllTemplatesByCreatorEmail(creatorEmail) > limitsConfig.getMaxTemplates())
+        if(templateRepository.countAllTemplatesByCreatorEmail(creatorEmail) > limitsProperties.getMaxTemplates())
             throw new LimitExceededException("Максимум можно создать %s шаблонов."
-                            .formatted(limitsConfig.getMaxTemplates()));
+                            .formatted(limitsProperties.getMaxTemplates()));
 
         User creator = (User) userDetailsService.loadUserByUsername(creatorEmail);
 

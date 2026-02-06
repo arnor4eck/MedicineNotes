@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "limits")
-public class LimitsConfig {
+public class LimitsProperties {
     private short maxTemplates;
     private short maxDuration;
     private short maxTimesADay;

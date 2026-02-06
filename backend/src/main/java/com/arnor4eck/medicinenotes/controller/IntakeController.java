@@ -26,7 +26,7 @@ public class IntakeController {
     @GetMapping("/{id}")
     public IntakeDto getIntakeById(@PathVariable long id,
                                    @AuthenticationPrincipal String email) {
-        return intakeService.getIntakeByIdWithCreator(id, email);
+        return intakeService.getIntakeByIdWithCreatorCheck(id, email);
     }
 
     @GetMapping("/my")
@@ -43,8 +43,7 @@ public class IntakeController {
                                        @AuthenticationPrincipal String email){
         return ResponseEntity
                 .accepted()
-                .body(
-                        intakeService.changeIntakeStatus(id, changeIntakeStatusRequest, email));
+                .body(intakeService.changeIntakeStatus(id, changeIntakeStatusRequest, email));
     }
 }
 
