@@ -1,7 +1,7 @@
 package com.arnor4eck.medicinenotes.test_utils;
 
-import com.arnor4eck.medicinenotes.config.JwtFilter;
-import com.arnor4eck.medicinenotes.config.SecurityConfig;
+import com.arnor4eck.medicinenotes.config.security.JwtFilter;
+import com.arnor4eck.medicinenotes.config.security.SecurityConfig;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
