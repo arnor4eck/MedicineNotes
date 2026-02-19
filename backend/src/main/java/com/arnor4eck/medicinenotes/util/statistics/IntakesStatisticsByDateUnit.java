@@ -1,7 +1,9 @@
 package com.arnor4eck.medicinenotes.util.statistics;
 
 import com.arnor4eck.medicinenotes.entity.IntakesStatus;
+import lombok.Getter;
 
+@Getter
 public class IntakesStatisticsByDateUnit {
     private StatusAndCountUnit[] units;
 
