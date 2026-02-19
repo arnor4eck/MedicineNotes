@@ -25,16 +25,16 @@ public class StatisticsService {
                                                                               String email){
         Map<String, IntakesStatisticsByDateUnit> units = new HashMap<>();
 
-        intakeRepository.getIntakeStatisticsByDate(date, email).forEach(el -> {
-            units.compute(el.name(), (k, v) -> {
-                if(v == null)
-                    v = new IntakesStatisticsByDateUnit();
+        intakeRepository.getIntakeStatisticsByDate(date, email).forEach(el ->
+                units.compute(el.name(), (k, v) -> {
+                    if(v == null)
+                        v = new IntakesStatisticsByDateUnit();
 
-                v.setCountForStatus(IntakesStatus.valueOf(el.status()), el.count());
+                    v.setCountForStatus(IntakesStatus.valueOf(el.status()),
+                            el.count());
 
-                return v;
-            });
-        });
+                    return v;
+        }));
 
         return new IntakesStatisticsByDate(units);
     }
