@@ -1,6 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
 import './Header.css'
-import {authService} from "../../service/authService.ts";
 
 export default function Header() {
     const location = useLocation();
@@ -8,8 +7,8 @@ export default function Header() {
     const navItems = [
         { path: '/templates', label: 'Шаблоны' },
         { path: '/intakes', label: 'Приёмы' },
-        authService.isAuthenticated() ? { path:  '/logout', label: 'Выйти' }
-            : { path: 'auth', label: 'Авторизоваться' }
+        { path:  '/statistics/intakes', label: 'Статистика' },
+        { path:  '/logout', label: 'Выйти' }
     ];
 
     return (
