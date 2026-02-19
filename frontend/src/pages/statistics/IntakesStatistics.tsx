@@ -19,7 +19,7 @@ export default function IntakesStatistics() {
                 setLoading(true);
                 const statisticsData =
                     await statisticsService.getIntakeStatisticsByDate(dateService.formatDate(date));
-                console.log(statisticsData);
+
                 setStatisticsIntakes(statisticsData);
 
             } catch (error){
@@ -71,11 +71,17 @@ export default function IntakesStatistics() {
                             <b>&gt;</b>
                         </button>
                     </div>
-                    <div className="intakes">
-                        {Object.entries(statisticsIntakes.statisticsByDate).map(([templateName, stats]) => (
-                            <IntakeStatisticsCard name={templateName} units={stats.units} />
-                        ))}
-                    </div>
+                    { Object.keys(statisticsIntakes.statisticsByDate).length === 0 ? (
+                        <div className="empty-state">
+                            <h3>Не найдено приёмов по заданной дате</h3>
+                        </div>
+                    ) : (
+                        <div className="intakes">
+                            {Object.entries(statisticsIntakes.statisticsByDate).map(([templateName, stats]) => (
+                                <IntakeStatisticsCard name={templateName} units={stats.units} />
+                            ))}
+                        </div>
+                    ) }
                 </div>
 
             )}

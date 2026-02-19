@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { authService } from "../../service/authService.ts";
+import { useNavigate, Link } from 'react-router-dom';
+import { registrationService } from "../../service/registrationService.ts";
 import '../css/form.css'
+import './Registration.css'
 import type {ApiError} from "../../types/apiError.ts";
 
-export default function AuthPage(){
+export default function Registration(){
     const [email, setEmail] = useState('');
+    const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
+    const [repeatPassword, setRepeatPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -16,10 +19,16 @@ export default function AuthPage(){
         setLoading(true);
         setError('');
 
+        if(password !== repeatPassword){
+            setError('Введённые пароли не совпадают');
+            setLoading(false);
+            return;
+        }
+
         try {
-            await authService.login({ email, password });
+            await registrationService.newUser({username, email, password});
             setTimeout(() => {
-                navigate('/templates', { replace: true });
+                navigate('/auth', { replace: true });
             }, 100);
 
         } catch (error) {
@@ -37,7 +46,7 @@ export default function AuthPage(){
                 {error && <div className="error-message">{error}</div>}
 
                 <div className="form-group">
-                    <label htmlFor="email">Email:</label>
+                    <label htmlFor="name">Email:</label>
                     <input
                         type="email"
                         id="email"
@@ -46,6 +55,19 @@ export default function AuthPage(){
                         required
                         disabled={loading}
                         placeholder="Введите ваш email"
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="username">Имя:</label>
+                    <input
+                        type="text"
+                        id="username"
+                        value={username}
+                        onChange={(e) => setUserName(e.target.value)}
+                        required
+                        disabled={loading}
+                        placeholder="Введите имя пользователя"
                     />
                 </div>
 
@@ -62,12 +84,29 @@ export default function AuthPage(){
                     />
                 </div>
 
+                <div className="form-group">
+                    <label htmlFor="repeat-password">Пароль:</label>
+                    <input
+                        type="password"
+                        id="repeat-password"
+                        value={repeatPassword}
+                        onChange={(e) => setRepeatPassword(e.target.value)}
+                        required
+                        disabled={loading}
+                        placeholder="Повторите ваш пароль"
+                    />
+                </div>
+
+                <p className="already" style={{ margin: '0px', fontSize: '16px', textAlign: 'center' }}>
+                    Уже зарегистрированы? <Link to="/auth">Войти</Link>
+                </p>
+
                 <button
                     type="submit"
                     disabled={loading}
                     className="main-button"
                 >
-                    {loading ? 'Вход...' : 'Войти'}
+                    {loading ? 'Регистрация...' : 'Зарегистрироваться'}
                 </button>
             </form>
         </div>

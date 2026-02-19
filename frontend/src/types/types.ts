@@ -20,13 +20,6 @@ export interface Intake {
     shouldAdoptedIn: string;
 }
 
-export interface CreateTemplateRequest {
-    name: string;
-    description: string;
-    timesPerDay: number;
-    endDate: string;
-}
-
 export interface CreateUserRequest {
     username: string;
     email: string;

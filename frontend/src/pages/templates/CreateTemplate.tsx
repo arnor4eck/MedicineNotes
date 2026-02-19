@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './CreateTemplate.css'
+import '../css/form.css'
 import {medicineTemplateService} from "../../service/medicineTemplateService.js";
 import type {ApiError} from "../../types/apiError.ts";
 
@@ -34,13 +34,13 @@ const CreateTemplatePage = () => {
     };
 
     return (
-        <div className='bg bg_create'>
-            <form onSubmit={handleSubmit} className="creating-form">
+        <div className='bg bg_form'>
+            <form onSubmit={handleSubmit} className="form">
                 <p>Создание шаблона приёма медицинского препарата</p>
 
                 {error && <div className="error-message">{error}</div>}
 
-                <div className="createGroup">
+                <div className="form-group">
                     <label htmlFor="name">Название:</label>
                     <input
                         type="text"
@@ -53,7 +53,7 @@ const CreateTemplatePage = () => {
                     />
                 </div>
 
-                <div className="createGroup">
+                <div className="form-group">
                     <label htmlFor="description">Описание:</label>
                     <input
                         type="text"
@@ -66,7 +66,7 @@ const CreateTemplatePage = () => {
                     />
                 </div>
 
-                <div className="createGroup">
+                <div className="form-group">
                     <label htmlFor="quantity">Количество:</label>
                     <input
                         type="number"
@@ -78,7 +78,7 @@ const CreateTemplatePage = () => {
                     />
                 </div>
 
-                <div className="createGroup">
+                <div className="form-group">
                     <label htmlFor="date">Конец:</label>
                     <input
                         type="date"
@@ -93,7 +93,7 @@ const CreateTemplatePage = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="createBtn"
+                    className="main-button"
                 >
                     {loading ? 'Создание...' : 'Создать'}
                 </button>

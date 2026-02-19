@@ -5,7 +5,7 @@ body {
     padding: 0;
 }
 
-.bg_auth {
+.bg_form {
     background-color: var(--primary-color);
     min-height: 100vh;
     min-width: 100vw;
@@ -14,7 +14,7 @@ body {
     align-items: center;
 }
 
-.login-form {
+.form {
     display: grid;
     flex-wrap: nowrap;
     width: clamp(300px, 50vw, 600px);
@@ -25,7 +25,7 @@ body {
     box-sizing: border-box;
 }
 
-.login-form p {
+.form p {
     margin-top: 50px;
     margin-bottom: 70px;
     font-size: 30px;
@@ -33,14 +33,14 @@ body {
     text-align: center;
 }
 
-.authGroup {
+.form-group {
     display: grid;
     align-items: center;
     flex-wrap: wrap;
     margin-bottom: 15px;
 }
 
-.authGroup label {
+.form-group label {
     font-size: 18px;
     display: block;
     width: 70px;
@@ -48,7 +48,7 @@ body {
     margin-bottom: 5px;
 }
 
-.authGroup input {
+.form-group input {
     margin-top: 7px;
     padding: 0 10px;
     width: clamp(200px, 100%, 500px);
@@ -64,13 +64,13 @@ body {
     transform: none !important;
 }
 
-.authGroup input:focus {
+.form-group input:focus {
     outline: none !important;
     box-shadow: none !important;
     border-color: inherit !important;
 }
 
-.authEnterBtn {
+.main-button {
     margin-bottom: 50px;
     margin-top: 30px;
     height: 50px;
@@ -86,61 +86,61 @@ body {
     width: 100%;
 }
 
-.authEnterBtn:hover {
+.main-button:hover {
     background-color: var(--hover-color);
 }
 
-.authEnterBtn:disabled {
+.main-button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
     opacity: 0.7;
 }
 
 @media screen and (max-width: 768px) {
-    .login-form {
+    .form {
         padding: 30px 40px;
         width: 90vw;
         max-width: 400px;
     }
 
-    .login-form p {
+    .form p {
         margin-bottom: 30px;
         font-size: 24px;
     }
 
-    .authGroup input {
+    .form-group input {
         font-size: 16px;
         height: 45px;
     }
 
-    .authGroup label {
+    .form-group label {
         font-size: 16px;
     }
 
-    .authEnterBtn {
+    .main-button {
         font-size: 18px;
         height: 45px;
     }
 }
 
 @media screen and (max-width: 480px) {
-    .login-form {
+    .form {
         padding: 20px;
         width: 95vw;
     }
 
-    .login-form p {
+    .form p {
         margin-top: 20px;
         margin-bottom: 20px;
         font-size: 20px;
     }
 
-    .authGroup input {
+    .form-group input {
         height: 40px;
         font-size: 14px;
     }
 
-    .authEnterBtn {
+    .main-button {
         margin-top: 20px;
         margin-bottom: 20px;
         height: 40px;

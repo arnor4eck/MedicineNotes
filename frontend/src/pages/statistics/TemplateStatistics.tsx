@@ -6,7 +6,7 @@ import type {ApiError} from "../../types/apiError.ts";
 import Header from "../../components/header/Header.tsx";
 import './TemplateStatistics.css'
 import {dateService} from "../../service/dateService.ts";
-import VerticalProgressBar from "../../components/VerticalProgressBar.tsx";
+import VerticalProgressBar from "../../components/progress_bar/VerticalProgressBar.tsx";
 
 export default function TemplateStatistics() {
     const { id } = useParams();
