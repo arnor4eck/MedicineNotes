@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from "../../service/authService.ts";
 import './AuthPage.css'
+import '../css/form.css'
 import type {ApiError} from "../../types/apiError.ts";
 
 export default function AuthPage(){
@@ -31,12 +32,12 @@ export default function AuthPage(){
 
     return (
         <div className='bg bg_auth'>
-            <form onSubmit={handleSubmit} className="login-form">
+            <form onSubmit={handleSubmit} className="form">
                 <p>Вход в систему</p>
 
                 {error && <div className="error-message">{error}</div>}
 
-                <div className="authGroup">
+                <div className="form-group">
                     <label htmlFor="email">Email:</label>
                     <input
                         type="email"
@@ -49,7 +50,7 @@ export default function AuthPage(){
                     />
                 </div>
 
-                <div className="authGroup">
+                <div className="form-group">
                     <label htmlFor="password">Пароль:</label>
                     <input
                         type="password"
@@ -65,7 +66,7 @@ export default function AuthPage(){
                 <button
                     type="submit"
                     disabled={loading}
-                    className="authEnterBtn"
+                    className="main-button"
                 >
                     {loading ? 'Вход...' : 'Войти'}
                 </button>
