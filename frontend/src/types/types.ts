@@ -53,3 +53,25 @@ export interface FullTemplateStatistics {
     templateStatistics: TemplateStatisticsUnit[];
     maxTimesPerDay: number;
 }
+
+// Статистика по датам
+
+// Единица статистики
+export interface StatusAndCountUnit {
+    status: 'PENDING' | 'DONE' | 'SKIPPED';
+    count: number;
+}
+
+export interface IntakeStatistics {
+    units: StatusAndCountUnit[];
+}
+
+// Общая статистика по датам
+export interface StatisticsByDate {
+    [key: string]: IntakeStatistics;  // ключ - название приема
+}
+
+// Корневой интерфейс
+export interface IntakeStatisticsResponse {
+    statisticsByDate: StatisticsByDate;
+}
