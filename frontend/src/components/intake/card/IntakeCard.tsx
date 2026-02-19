@@ -1,5 +1,6 @@
 import './IntakeCard.css'
 import { useNavigate } from "react-router-dom";
+import {statusService} from "../../../service/statusService.ts";
 
 interface IntakeCardProps {
     id: number;
@@ -13,19 +14,6 @@ export default function IntakeCard(props: IntakeCardProps){
 
     const { id, name, status, date } = props;
 
-    const getStatusInfo = (status : string) => {
-        switch (status) {
-            case 'PENDING':
-                return 'Ожидание';
-            case 'DONE':
-                return 'Принято';
-            case 'SKIPPED':
-                return 'Пропущено';
-            default:
-                return 'Неизвестно';
-        }
-    };
-
     return(
       <article className='intake-card'>
           <div className='intake-card__header'>
@@ -35,7 +23,7 @@ export default function IntakeCard(props: IntakeCardProps){
               <button onClick={() => navigate(`/intakes/${id}`)}
                       className='card__button card__button--primary'> Подробнее</button>
               <p className='intake-card__date'>{date}</p>
-              <p className='intake-card__status'>{getStatusInfo(status)}</p>
+              <p className='intake-card__status'>{statusService.getStatusInfo(status)}</p>
           </div>
       </article>
     );

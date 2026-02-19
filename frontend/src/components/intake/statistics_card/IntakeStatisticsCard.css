@@ -1,0 +1,35 @@
+.intake-statistics-card{
+    width: 100%;
+    background: var(--default-color);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border-radius: var(--default-border-radius);
+    border: solid black 2px;
+}
+
+.statuses-part{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+}
+
+.status{
+    background: green;
+    padding: 2px;
+    border: solid black 2px;
+    margin-inline: 30%;
+    border-radius: var(--default-border-radius);
+    background: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    .intake-statistics-card {
+        grid-template-columns: 1fr;
+        padding-bottom: 15px;
+    }
+
+    .intakes{
+        padding-bottom: 15px;
+    }
+}

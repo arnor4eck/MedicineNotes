@@ -29,12 +29,12 @@ public interface IntakeRepository extends JpaRepository<Intake,Long> {
     int setSkipped();
 
     @Query(value = """
-    SELECT t.name, i.status, COUNT(*) FROM intakes AS i 
-    JOIN templates AS t ON t.id = i.template_id 
-    JOIN users AS u ON t.user_id = u.id
-    WHERE shouldadoptedin=:date AND u.email = :email
-    GROUP BY ROLLUP (t.name, status) 
-    ORDER BY t.name;
+        SELECT t.name, i.status, COUNT(*) FROM intakes AS i
+        JOIN templates AS t ON t.id = i.template_id
+        JOIN users AS u On u.id = t.user_id
+        WHERE i.shouldadoptedin = :date AND u.email = :email
+        GROUP BY (t.name, i.status)
+        ORDER BY (t.name)
     """, nativeQuery = true)
     Collection<IntakeStatisticsUnit> getIntakeStatisticsByDate(@Param("date") LocalDate date,
                                                                @Param("email") String email);

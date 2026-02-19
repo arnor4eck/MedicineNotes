@@ -34,7 +34,6 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
-    background: #fafafa;
 }
 
 .intake_card__info-item {
