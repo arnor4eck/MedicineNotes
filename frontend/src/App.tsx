@@ -9,6 +9,7 @@ import IntakeDetails from './pages/intakes/IntakeDetails.tsx'
 import Main from './pages/Main.tsx'
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import TemplateStatistics from "./pages/statistics/TemplateStatistics.tsx";
+import IntakesStatistics from "./pages/statistics/IntakesStatistics.tsx";
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
               <Route path="/intakes/:id" element={<IntakeDetails />} />
               <Route path="/intakes/:id/done" element={<IntakeDetails />} />
               <Route path="/statistics/templates/:id" element={<TemplateStatistics />} />
+              <Route path="/statistics/intakes" element={<IntakesStatistics />} />
 
               <Route
                   path="/auth"
