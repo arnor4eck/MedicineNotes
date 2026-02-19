@@ -1,4 +1,4 @@
-import type {FullTemplateStatistics} from "../types/types.ts";
+import type {FullTemplateStatistics, IntakeStatisticsResponse} from "../types/types.ts";
 import api from "./api.ts";
 
 
@@ -12,6 +12,16 @@ class StatisticsService {
             return res.data;
         }catch (error) {
             console.error(`Ошибка получения статистики шаблона с id: ${id}`);
+            throw error;
+        }
+    }
+
+    async getIntakeStatisticsByDate(date : string | null): Promise<IntakeStatisticsResponse> {
+        try{
+            const res = await api.get<IntakeStatisticsResponse>(STATISTICS_URL + `/intakes?date=${date}`);
+            return res.data;
+        }catch (error) {
+            console.error(`Ошибка получения статистики по дате: ${date}`);
             throw error;
         }
     }
