@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './CreateTemplate.css'
 import '../css/form.css'
 import {medicineTemplateService} from "../../service/medicineTemplateService.js";
 import type {ApiError} from "../../types/apiError.ts";
@@ -35,7 +34,7 @@ const CreateTemplatePage = () => {
     };
 
     return (
-        <div className='bg bg_create'>
+        <div className='bg bg_form'>
             <form onSubmit={handleSubmit} className="form">
                 <p>Создание шаблона приёма медицинского препарата</p>
 

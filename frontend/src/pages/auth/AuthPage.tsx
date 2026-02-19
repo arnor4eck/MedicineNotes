@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from "../../service/authService.ts";
-import './AuthPage.css'
 import '../css/form.css'
 import type {ApiError} from "../../types/apiError.ts";
 
@@ -31,7 +30,7 @@ export default function AuthPage(){
     };
 
     return (
-        <div className='bg bg_auth'>
+        <div className='bg bg_form'>
             <form onSubmit={handleSubmit} className="form">
                 <p>Вход в систему</p>
 
