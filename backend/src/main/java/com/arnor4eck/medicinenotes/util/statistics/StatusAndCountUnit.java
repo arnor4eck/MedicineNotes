@@ -10,10 +10,4 @@ public class StatusAndCountUnit {
     private final IntakesStatus status;
 
     private long count;
-
-    @Override
-    public int hashCode() {
-        return status.hashCode();
-    }
-
 }

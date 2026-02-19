@@ -1,5 +1,5 @@
 package com.arnor4eck.medicinenotes.util.statistics;
 
-import java.util.List;
+import java.util.Map;
 
-public record IntakesStatisticsByDate(List<IntakesStatisticsByDateUnit> statisticsByDate) {}
+public record IntakesStatisticsByDate(Map<String, IntakesStatisticsByDateUnit> statisticsByDate) {}
