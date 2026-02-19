@@ -1,5 +1,5 @@
 class StatusService{
-    getStatusInfo (status : string) : string {
+    getStatusInfo = (status : string) => {
         switch (status) {
             case 'PENDING':
                 return 'Ожидание';
