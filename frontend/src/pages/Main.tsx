@@ -9,7 +9,7 @@ export default function Main(){
             <div className='container'>
                 <h1 className='title'>MedicineNotes</h1>
                 <p>Следит за вашим здоровьем</p>
-                <button onClick={() => navigate('/auth', {replace : true})}>Попробовать</button>
+                <button onClick={() => navigate('/registration', {replace : true})}>Попробовать</button>
             </div>
         </div>
     )

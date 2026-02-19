@@ -1,0 +1,15 @@
+.already {
+    font-size: 14px;
+    color: grey;
+    text-align: center;
+}
+
+.already a {
+    color: #007bff;
+    text-decoration: none;
+    margin-left: 5px;
+}
+
+.already a:hover {
+    text-decoration: underline;
+}
