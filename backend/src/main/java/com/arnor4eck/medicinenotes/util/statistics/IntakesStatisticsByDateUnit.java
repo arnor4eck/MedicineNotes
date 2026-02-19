@@ -10,9 +10,10 @@ public class IntakesStatisticsByDateUnit {
 
     public IntakesStatisticsByDateUnit(String name){
         this.name = name;
-        this.units = (StatusAndCountUnit[]) Arrays.stream(IntakesStatus.values())
-                .map(s -> new StatusAndCountUnit(s, 0)).toArray(StatusAndCountUnit[]::new);;
+        this.units = new StatusAndCountUnit[IntakesStatus.values().length];
 
+        for(IntakesStatus status : IntakesStatus.values())
+            units[status.ordinal()] = new StatusAndCountUnit(status, 0);
     }
 
     public void setCountForStatus(IntakesStatus status,
@@ -23,5 +24,20 @@ public class IntakesStatisticsByDateUnit {
                 return;
             }
 
+    }
+
+    @Override
+    public int hashCode(){
+        return 31 * this.name.hashCode() + Arrays.hashCode(units);
+    }
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof IntakesStatisticsByDateUnit) {
+            IntakesStatisticsByDateUnit other = (IntakesStatisticsByDateUnit) o;
+
+            return this.name.equals(other.name) && Arrays.equals(this.units, other.units);
+        }
+
+        return false;
     }
 }

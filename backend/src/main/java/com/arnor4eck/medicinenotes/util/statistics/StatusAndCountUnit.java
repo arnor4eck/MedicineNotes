@@ -11,4 +11,9 @@ public class StatusAndCountUnit {
 
     private long count;
 
+    @Override
+    public int hashCode() {
+        return status.hashCode();
+    }
+
 }
