@@ -4,6 +4,7 @@ import com.arnor4eck.medicinenotes.service.UserService;
 import com.arnor4eck.medicinenotes.util.request.AuthenticationRequest;
 import com.arnor4eck.medicinenotes.util.request.CreateUserRequest;
 import com.arnor4eck.medicinenotes.util.response.AuthenticationResponse;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import com.arnor4eck.medicinenotes.util.dto.UserDto;
 import jakarta.validation.Valid;
@@ -20,6 +21,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/registration")
+    @RateLimiter(name = "registrationLimiter")
     public ResponseEntity<Void> createUser(@RequestBody @Valid CreateUserRequest request) {
         userService.registration(request);
 
@@ -27,6 +29,7 @@ public class UserController {
     }
 
     @PostMapping("/authentication")
+    @RateLimiter(name = "authLimiter")
     public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody @Valid AuthenticationRequest request) {
         AuthenticationResponse response = userService.authenticate(request);
 

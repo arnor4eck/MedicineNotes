@@ -4,6 +4,7 @@ import com.arnor4eck.medicinenotes.util.controller_advice.ExceptionResponseFacto
 import com.arnor4eck.medicinenotes.util.exception.illegal_argument.LimitExceededException;
 import com.arnor4eck.medicinenotes.util.exception.not_found.NotFoundException;
 import com.arnor4eck.medicinenotes.util.response.ExceptionResponse;
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -56,6 +57,14 @@ public class ControllerAdvice {
                                                          HttpServletResponse response) {
         return exceptionResponseFactory.create("Доступ к ресурсу ограничен.",
                 response, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler({RequestNotPermitted.class})
+    public ExceptionResponse requestNotPermitted(RequestNotPermitted e, HttpServletResponse response){
+        response.setHeader("Retry-After", "3");
+
+        return exceptionResponseFactory.create("Слишком много запросов. Повторите попытку",
+                response, HttpStatus.TOO_MANY_REQUESTS);
     }
 
     @ExceptionHandler({AuthenticationException.class})
