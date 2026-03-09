@@ -1,36 +1,50 @@
 spring:
   application:
     name: MedicineNotes
+
   datasource:
-    url: jdbc:postgresql://localhost:5433/MedicineNotes
-    username: admin
-    password: secret
+    url: jdbc:postgresql://localhost:5433/medicinenotes
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 20
 
 logging:
   level:
     org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql: TRACE
+    org.hibernate.orm.jdbc.bind: TRACE
     org.springframework.jdbc.core: DEBUG
     org.springframework.transaction: DEBUG
 
 jwt:
-  lifetime: 300000
-  secret: testfkwofnasjfnueh83nd8274hf8efnw8eufnc8j4w9ncfh987sh84hn8c5h998aewhnf8choeg
+  lifetime: ${JWT_LIFETIME:300000}
+  secret: ${JWT_SECRET:testfkwofnasjfnueh83nd8274hf8efnw8eufnc8j4w9ncfh987sh84hn8c5h998aewhnf8choeg}
 
 limits:
-  max-templates: 15
-  max-duration: 90
-  max-times-a-day: 18
+  max-templates: ${LIMITS_MAX_TEMPLATES:15}
+  max-duration: ${LIMITS_MAX_DURATION:90}
+  max-times-a-day: ${LIMITS_MAX_TIMES_A_DAY:18}
 
 cache:
   names:
     - intake
     - template
+
+spring.datasource.hikari:
+  maximum-pool-size: 10
+  minimum-idle: 5
+  connection-timeout: 30000
+  idle-timeout: 600000
+  max-lifetime: 1800000

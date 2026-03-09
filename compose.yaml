@@ -1,0 +1,64 @@
+services:
+  postgres:
+    image: 'postgres:18'
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-medicinenotes}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_USER: ${DB_USER:-postgres}
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    container_name: react-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-medicinenotes}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-postgres}
+      SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.postgresql.Driver
+      SPRING_JPA_HIBERNATE_DDL-AUTO: update
+      JWT_SECRET: ${JWT_SECRET:-testfkwofnasjfnueh83nd8274hf8efnw8eufnc8j4w9ncfh987sh84hn8c5h998aewhnf8choeg}
+      JWT_LIFETIME: ${JWT_LIFETIME:-300000}
+      LIMITS_MAX_TEMPLATES: ${LIMITS_MAX_TEMPLATES:-15}
+      LIMITS_MAX_DURATION: ${LIMITS_MAX_DURATION:-90}
+      LIMITS_MAX_TIMES_A_DAY: ${LIMITS_MAX_TIMES_A_DAY:-18}
+    container_name: spring-boot-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+    command: java -jar app.jar
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
