@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.tasks.run.BootRun
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '4.0.1'
@@ -57,8 +59,19 @@ dependencies {
     testImplementation 'com.h2database:h2'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
+    implementation 'org.springframework.boot:spring-boot-h2console'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.register('bootRunDev', BootRun) {
+    group = 'application'
+    description = 'Run the Spring Boot application with dev profile'
+
+    mainClass = bootRun.mainClass
+    classpath = bootRun.classpath
+
+    environment 'SPRING_PROFILES_ACTIVE', 'dev'
 }

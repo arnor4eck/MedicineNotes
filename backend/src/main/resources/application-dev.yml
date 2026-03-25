@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: MedicineNotes
+  docker:
+    compose:
+      enabled: false
+
+  datasource:
+    url: jdbc:h2:mem:mednotes
+    driver-class-name: org.h2.Driver
+    generate-unique-name: false
+    name: mednotes
+    username: admin
+    password: admin
+  sql:
+    init:
+      mode: always
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+  h2:
+    console:
+      enabled: true
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.springframework.jdbc.core: DEBUG
+    org.springframework.transaction: DEBUG
+
+jwt:
+  lifetime: 30000000
+  secret: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret
+
+limits:
+  max-templates: 15
+  max-duration: 90
+  max-times-a-day: 18
+
+cache:
+  names:
+    - intake
+    - template
