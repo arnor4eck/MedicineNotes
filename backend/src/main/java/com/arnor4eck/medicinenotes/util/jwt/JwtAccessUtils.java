@@ -57,6 +57,7 @@ public class JwtAccessUtils implements JwtUtils<User>{
         return getClaimsFromToken(token).getSubject();
     }
 
+    @SuppressWarnings("unchecked") // generateToken - поле roles предсталено в виде списка строк, приведение корректно
     public List<String> getRoles(String token){
         return getClaimsFromToken(token).get("roles", List.class);
     }

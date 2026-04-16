@@ -56,6 +56,9 @@ dependencies {
     implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.3.0'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    // Mail Sender
+    implementation 'org.springframework.boot:spring-boot-starter-mail:4.1.0-M4'
+
     testImplementation 'com.h2database:h2'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
@@ -66,6 +69,40 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+def readProperties() {
+    def envFile = file("${projectDir}/.env")
+    def envProps = [:]
+
+    if(envFile.exists()){
+        def envLines = envFile.readLines()
+
+        for (i in 0..< envLines.size()) {
+            def line = envLines[i].trim()
+
+            if(!line.isEmpty() && !line.startsWith("#")){
+                def lindexOfComm = line.indexOf('#');
+                if(lindexOfComm != -1)
+                    line = line.substring(0, lindexOfComm)
+
+                String[] lineParts = line.split('=')
+
+                if(lineParts.length == 2){
+                    def key = lineParts[0].trim()
+                    def value = lineParts[1].trim()
+
+                    envProps.put key, value
+                    System.setProperty(key, value)
+                    println "Системная переменная ${key} успешно установлена"
+                }else
+                    println "Пропущена строка номер ${i + 1}"
+            }
+        }
+    }else
+        println "Файл .env не найден в корне проекта"
+
+    return envProps
+}
+
 tasks.register('bootRunDev', BootRun) {
     group = 'application'
     description = 'Run the Spring Boot application with dev profile'
@@ -73,5 +110,13 @@ tasks.register('bootRunDev', BootRun) {
     mainClass = bootRun.mainClass
     classpath = bootRun.classpath
 
-    environment 'SPRING_PROFILES_ACTIVE', 'dev'
+    doFirst {
+        def envProps = readProperties()
+        envProps['spring.profiles.active'] = 'dev'
+        envProps.each { key, value -> // системные свойства в JVM Gradle
+            System.setProperty(key, value)
+        }
+
+        systemProperties = envProps  //systemProperties - это свойство задачи BootRun
+    }
 }
