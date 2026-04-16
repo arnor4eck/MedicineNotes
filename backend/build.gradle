@@ -59,6 +59,9 @@ dependencies {
     // Mail Sender
     implementation 'org.springframework.boot:spring-boot-starter-mail:4.1.0-M4'
 
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     testImplementation 'com.h2database:h2'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'

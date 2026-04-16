@@ -1,9 +1,7 @@
 services:
-  postgres:
-    image: 'postgres:latest'
-    environment:
-      - 'POSTGRES_DB=medicinenotes'
-      - 'POSTGRES_PASSWORD=postgres'
-      - 'POSTGRES_USER=postgres'
+  redis:
+    image: 'redis:alpine'
+    container_name: redis
     ports:
-      - '5433:5432'
+      - "6379:6379"
+    command: redis-server --requirepass "mypass"
