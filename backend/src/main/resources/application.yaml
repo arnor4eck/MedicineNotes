@@ -7,6 +7,12 @@ spring:
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
   mail:
     host: smtp.gmail.com
     port: 587
@@ -40,15 +46,16 @@ limits:
   max-templates: ${LIMITS_MAX_TEMPLATES}
   max-duration: ${LIMITS_MAX_DURATION}
   max-times-a-day: ${LIMITS_MAX_TIMES_A_DAY}
+  max-code-attempts: ${MAX_CODE_ATTEMPTS}
+  max-send-mail: ${MAX_SEND_MAIL}
+
+redis:
+  timeout:
+    code: ${REDIS_TIMEOUT_CODE}
+    attempts: ${REDIS_TIMEOUT_ATTEMPTS}
+    send: ${REDIS_TIMEOUT_SEND}
 
 cache:
   names:
     - intake
     - template
-
-spring.datasource.hikari:
-  maximum-pool-size: 10
-  minimum-idle: 5
-  connection-timeout: 30000
-  idle-timeout: 600000
-  max-lifetime: 1800000

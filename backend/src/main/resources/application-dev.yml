@@ -44,6 +44,14 @@ limits:
   max-templates: 15
   max-duration: 90
   max-times-a-day: 18
+  max-code-attempts: 2
+  max-send-mail: 2
+
+redis:
+  timeout:
+    code: 60
+    attempts: 15
+    send: 10
 
 cache:
   names:

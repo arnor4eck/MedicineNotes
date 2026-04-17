@@ -13,4 +13,8 @@ public class LimitsProperties {
     private short maxTemplates;
     private short maxDuration;
     private short maxTimesADay;
+
+    // MAIL
+    private int maxCodeAttempts;
+    private int maxSendMail;
 }
