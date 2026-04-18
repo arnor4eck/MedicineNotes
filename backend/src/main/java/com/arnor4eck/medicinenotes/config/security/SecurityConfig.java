@@ -68,6 +68,8 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/**/user/registration",
+                                "/**/user/registration/new/code",
+                                "/**/user/registration/verify",
                                 "/**/user/authentication").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -87,6 +89,8 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/**/user/registration",
+                                "/**/user/registration/new/code",
+                                "/**/user/registration/verify",
                                 "/**/user/authentication", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
