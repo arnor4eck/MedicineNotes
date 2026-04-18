@@ -5,9 +5,9 @@ spring:
   data:
     redis:
       host: localhost
-      password: mypass
       port: 6379
       database: 0
+      password: password
 
   datasource:
     url: jdbc:h2:mem:mednotes
@@ -50,8 +50,8 @@ limits:
 redis:
   timeout:
     code: 60
-    attempts: 15
-    send: 10
+    attempts: 60
+    send: 60
 
 cache:
   names:

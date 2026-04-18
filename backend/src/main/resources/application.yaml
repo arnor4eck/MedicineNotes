@@ -2,6 +2,13 @@ spring:
   application:
     name: MedicineNotes
 
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      database: ${REDIS_DATABASE}
+      password: ${REDIS_PASSWORD}
+
   datasource:
     url: jdbc:postgresql://localhost:5433/medicinenotes
     username: postgres
