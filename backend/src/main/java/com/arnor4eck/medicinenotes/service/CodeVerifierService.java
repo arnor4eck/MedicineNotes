@@ -6,10 +6,13 @@ import com.arnor4eck.medicinenotes.service.code_verifier.ExceededLimit;
 import com.arnor4eck.medicinenotes.service.code_verifier.RedisStorage;
 import com.arnor4eck.medicinenotes.service.mail_sender.MailSenderService;
 import com.arnor4eck.medicinenotes.util.PreRegistration;
+import com.arnor4eck.medicinenotes.util.exception.CodeVerifierException;
 import com.arnor4eck.medicinenotes.util.request.CreateUserRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class CodeVerifierService {
@@ -43,12 +46,26 @@ public class CodeVerifierService {
         this.limitsProperties = limitsProperties;
     }
 
+    /**
+     * Проверяет, существует ли пользователь в системе проверки кода.
+     *
+     * @param email Электронная почта пользователя, существование которого необходимо проверить
+     * */
     public boolean isUserAlreadyInStorage(String email){
         return codeRedisStorage.get(email).isPresent();
     }
 
+    /**
+     * Отправляет код подтверждения и создает записи.
+     * Предварительно не проверяет возможное превышение лимитов.
+     *
+     * @param request Запрос на регистрацию нового пользователя
+     * @throws CodeVerifierException Если записи с заданным ключем не существует
+     * */
     public void createAndSendCode(CreateUserRequest request){
         String code = codeGenerator.generateCode();
+
+        mailSender.send(request.email(), SUBJECT, String.format(TEXT_PATTERN, code));
 
         codeRedisStorage.put(request.email(),
                 new PreRegistration(request.email(), request.username(),
@@ -56,13 +73,19 @@ public class CodeVerifierService {
 
         attemptsRedisStorage.put(request.email(), 0);
         sendRedisStorage.put(request.email(), 1);
-
-        mailSender.send(request.email(), SUBJECT, String.format(TEXT_PATTERN, code));
     }
 
+    /**
+     * Проверяет пользователя на возможные нарушения количества лимитов.
+     * Сначала проверяется количество попыток, а после - количество запросов кода.
+     *
+     * @param email Электронная почта пользователя, чьи лимиты необходимо проверить
+     * @throws CodeVerifierException Если записи с заданным ключем не существует
+     * @return Возможное нарушение лимита
+     * */
     public ExceededLimit checkLimits(String email) {
-        int attempts = attemptsRedisStorage.get(email).get();
-        int send = sendRedisStorage.get(email).get();
+        int attempts = getValueWithCheck(attemptsRedisStorage.get(email));
+        int send = getValueWithCheck(sendRedisStorage.get(email));
 
         if(attempts > limitsProperties.getMaxCodeAttempts())
             return ExceededLimit.ATTEMPTS;
@@ -72,34 +95,73 @@ public class CodeVerifierService {
         return ExceededLimit.NONE;
     }
 
+    /**
+     * Отправляет новый код подтверждения.
+     * Предварительно не проверяет возможное превышение лимитов.
+     * В случае успешной повторной отправки увеличивает счетчик запрошенных писем и обнуляет счетчик попыток.
+     *
+     * @param email Электронная почта пользователя, запросившего код
+     * @throws CodeVerifierException Если записи с заданным ключем не существует
+     * */
     public void sendNewCode(String email){
+        PreRegistration savedCode = getValueWithCheck(codeRedisStorage.get(email));
         String code = codeGenerator.generateCode();
-        PreRegistration savedCode = codeRedisStorage.get(email).get();
-
-        codeRedisStorage.put(email, new PreRegistration(savedCode, code));
-        sendRedisStorage.put(email, sendRedisStorage.get(email).get() + 1);
-        attemptsRedisStorage.put(email, 0);
 
         mailSender.send(email, SUBJECT, String.format(TEXT_PATTERN, code));
+
+        sendRedisStorage.put(email, getValueWithCheck(sendRedisStorage.get(email)) + 1);
+        codeRedisStorage.put(email, new PreRegistration(savedCode, code));
+        attemptsRedisStorage.put(email, 0);
     }
 
+    /**
+     * Проверяет на соответствие сохранённый и отправленный коды.
+     * В случае несовпадение не увеличивает количество неудачных попыток.
+     *
+     * @param email Электронная почта пользователя, приславшего код
+     * @param code Код подтверждения, отправленный пользователем
+     * @throws CodeVerifierException Если записи с заданным ключем не существует
+     * @return Истина, если коды совпадают, иначе - ложь
+     * */
     public boolean verifyCode(String email, String code){
-        String savedCode = codeRedisStorage.get(email).get().code();
+        String savedCode = getValueWithCheck(codeRedisStorage.get(email)).code();
 
         return savedCode.equals(code);
     }
 
+    /**
+     * Возвращает сохранённый объект типа PreRegistration.
+     *
+     * @param email Электронная почта пользователя, чей объект необходимо вернуть
+     * @throws CodeVerifierException Если записи с заданным ключем не существует
+     * */
     public PreRegistration getPreRegistration(String email){
-        return codeRedisStorage.get(email).get();
+        return getValueWithCheck(codeRedisStorage.get(email));
     }
 
+    /**
+     * Увеличивает количетво использованных попыток на 1.
+     *
+     * @param email Электронная почта пользователя, чей счетчик нужно увеличить
+     * @throws CodeVerifierException Если записи с заданным ключем не существует
+     * */
     public void increaseAttempts(String email){
-        attemptsRedisStorage.put(email, attemptsRedisStorage.get(email).get() + 1);
+        attemptsRedisStorage.put(email, getValueWithCheck(attemptsRedisStorage.get(email)) + 1);
     }
 
+    /**
+     * Удаляет записи со всеми префиксами.
+     *
+     * @param email Электронная почта удаляемого пользователя
+     * */
     public void removeAll(String email){
         codeRedisStorage.remove(email);
         attemptsRedisStorage.remove(email);
         sendRedisStorage.remove(email);
+    }
+
+    private <T> T getValueWithCheck(Optional<? extends T> optional){
+        return optional
+                .orElseThrow(() -> new CodeVerifierException("Данные неактуальны. Отправьте код заново."));
     }
 }
