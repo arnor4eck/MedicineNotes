@@ -10,10 +10,10 @@ spring:
       password: ${REDIS_PASSWORD}
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/medicinenotes
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER}
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
@@ -35,15 +35,9 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL}
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        jdbc:
-          batch_size: 20
 
 jwt:
   lifetime: ${JWT_LIFETIME}
