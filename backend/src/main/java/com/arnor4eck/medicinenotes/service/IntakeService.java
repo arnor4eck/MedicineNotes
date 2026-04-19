@@ -2,6 +2,7 @@ package com.arnor4eck.medicinenotes.service;
 
 import com.arnor4eck.medicinenotes.entity.Intake;
 import com.arnor4eck.medicinenotes.entity.IntakesStatus;
+import com.arnor4eck.medicinenotes.entity.MedicineTemplate;
 import com.arnor4eck.medicinenotes.repository.IntakeRepository;
 import com.arnor4eck.medicinenotes.service.cache.CacheIntakeService;
 import com.arnor4eck.medicinenotes.util.dto.IntakeDto;
@@ -16,6 +17,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Service
@@ -23,6 +26,8 @@ import java.util.stream.Stream;
 public class IntakeService {
 
     private final IntakeRepository intakeRepository;
+
+    private final MedicineTemplateService templateService;
 
     private final CacheIntakeService cacheIntakeService;
 
@@ -47,6 +52,31 @@ public class IntakeService {
         return intakes
                 .map(IntakeDto::fromEntity)
                 .toList();
+    }
+
+    void changeIntakesByChangingUntilTemplateDate(long templateId,
+                                                  LocalDate oldUntilDate){
+        MedicineTemplate template = templateService.getTemplateById(templateId);
+
+        int compared = oldUntilDate.compareTo(template.getUntil());
+
+        if(compared < 0) // новая дата больше
+            intakeRepository.saveAll( // значит добавляем новые
+                oldUntilDate
+                    .datesUntil(template.getUntil())
+                    .flatMap(date ->
+                            IntStream.range(0, (int) template.getQuantityPerDay()) // колиичество в день
+                                .mapToObj(i ->
+                                    Intake.builder()
+                                    .template(template)
+                                    .adoptedIn(null)
+                                    .status(IntakesStatus.PENDING)
+                                    .shouldAdoptedIn(date)
+                                    .build()
+                                )
+                    ).toList());
+        else if(compared > 0) // новая дата меньше
+            intakeRepository.deleteIntakesMoreThanNewUntil(template.getUntil(), template.getId());
     }
 
     public IntakeDto changeIntakeStatus(long id,

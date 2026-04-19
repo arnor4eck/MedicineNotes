@@ -2,6 +2,7 @@ package com.arnor4eck.medicinenotes.controller;
 
 import com.arnor4eck.medicinenotes.service.MedicineTemplateService;
 import com.arnor4eck.medicinenotes.util.dto.MedicineTemplateDto;
+import com.arnor4eck.medicinenotes.util.request.ChangeTemplateUntilDateRequest;
 import com.arnor4eck.medicinenotes.util.request.CreateTemplateRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ public class MedicineTemplateController {
                                                @AuthenticationPrincipal String email) {
         return MedicineTemplateDto
                 .fromEntity(
-                        templateService.getTemplateByIdCreator(id, email));
+                        templateService.getTemplateByIdCreatorValidation(id, email));
     }
 
     @PostMapping("/create")
@@ -39,5 +40,11 @@ public class MedicineTemplateController {
     @GetMapping("/my")
     public Collection<MedicineTemplateDto> getTemplates(@AuthenticationPrincipal String email){
         return templateService.getAllUserTemplates(email);
+    }
+
+    @PatchMapping("/{id}")
+    public void changeUntilDate(@PathVariable long id, @AuthenticationPrincipal String email,
+                                @RequestBody @Valid ChangeTemplateUntilDateRequest changeTemplateUntilDateRequest){
+        templateService.changeTemplateUntilDateById(id, email, changeTemplateUntilDateRequest);
     }
 }

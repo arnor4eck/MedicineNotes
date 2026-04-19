@@ -1,6 +1,7 @@
 package com.arnor4eck.medicinenotes.repository;
 
 import com.arnor4eck.medicinenotes.entity.Intake;
+import com.arnor4eck.medicinenotes.entity.MedicineTemplate;
 import com.arnor4eck.medicinenotes.util.statistics.IntakeStatisticsUnit;
 import com.arnor4eck.medicinenotes.util.statistics.TemplateStatisticsUnit;
 import jakarta.transaction.Transactional;
@@ -49,4 +50,11 @@ public interface IntakeRepository extends JpaRepository<Intake,Long> {
     """,  nativeQuery = true)
     Collection<TemplateStatisticsUnit> getTemplateStatisticsOfDone(@Param("template_id") long templateId,
                                                                    @Param("offset") int offsetWith5);
+
+    @Query(value = "DELETE FROM intakes AS i WHERE i.template_id = :template_id AND i.shouldadoptedin >= :until",
+            nativeQuery = true)
+    @Modifying
+    @Transactional
+    void deleteIntakesMoreThanNewUntil(@Param("until") LocalDate until,
+                                       @Param("template_id") long template_id);
 }

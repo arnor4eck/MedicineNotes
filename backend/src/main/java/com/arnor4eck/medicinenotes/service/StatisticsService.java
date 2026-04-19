@@ -42,7 +42,7 @@ public class StatisticsService {
     public FullTemplateStatistics getFullTemplateStatisticsByIdAndEmail(long templateId, int offset,
                                                                         String email){
 
-        MedicineTemplate template = templateService.getTemplateByIdCreator(templateId, email);
+        MedicineTemplate template = templateService.getTemplateByIdCreatorValidation(templateId, email);
 
         return new FullTemplateStatistics(intakeRepository.getTemplateStatisticsOfDone(templateId, offset),
                 template.getQuantityPerDay());

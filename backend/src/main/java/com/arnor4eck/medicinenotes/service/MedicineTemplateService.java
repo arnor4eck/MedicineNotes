@@ -11,14 +11,17 @@ import com.arnor4eck.medicinenotes.service.cache.CacheTemplateService;
 import com.arnor4eck.medicinenotes.util.dto.MedicineTemplateDto;
 import com.arnor4eck.medicinenotes.util.exception.illegal_argument.LimitExceededException;
 import com.arnor4eck.medicinenotes.util.exception.not_found.MedicineTemplateNotFoundException;
+import com.arnor4eck.medicinenotes.util.request.ChangeTemplateUntilDateRequest;
 import com.arnor4eck.medicinenotes.util.request.CreateTemplateRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -37,16 +40,63 @@ public class MedicineTemplateService {
 
     private final CacheTemplateService cacheTemplateService;
 
-    public MedicineTemplate getTemplateByIdCreator(long id,
-                                                   String email) {
-        MedicineTemplate template = cacheTemplateService.getTemplateById(id)
-                .orElseThrow(() ->new MedicineTemplateNotFoundException("Шаблон с заданным ID не найден."));
+    //private final IntakeService intakeService;
 
+    public MedicineTemplate getTemplateByIdCreatorValidation(long id,
+                                                   String email) {
+        MedicineTemplate template = this.getTemplateById(id);
         if(!template.getCreator().getEmail().equals(email))
             throw new ResponseStatusException(HttpStatusCode.valueOf(403),
                     "У вас нет доступа к этому ресурсу.");
 
         return template;
+    }
+
+    /** Получение шаблона по ID
+     * @param id ID шаблона
+     * @return Найденный шаблон
+     * @throws MedicineTemplateNotFoundException
+     * */
+    MedicineTemplate getTemplateById(long id){
+        return cacheTemplateService.getTemplateById(id)
+                .orElseThrow(() -> new MedicineTemplateNotFoundException("Шаблон с заданным ID не найден."));
+    }
+
+    /** Обновление существующего шаблона, изменение даты окончания приёмов
+     * @param id ID шаблона
+     * @param email Email пользователя, запрашивающего смену
+     * @param changeTemplateUntilDateRequest Новая дата окончания приёмов
+     *
+     * */
+    @Transactional
+    public void changeTemplateUntilDateById(long id, String email,
+                                            ChangeTemplateUntilDateRequest changeTemplateUntilDateRequest){
+        MedicineTemplate template = this.getTemplateByIdCreatorValidation(id, email);
+
+        if(!this.changeTemplateUntilDate(template, changeTemplateUntilDateRequest.until()))
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400),
+                    "Некорректная дата.");
+
+        LocalDate oldUntilTime = template.getUntil();
+        template.setUntil(changeTemplateUntilDateRequest.until());
+        templateRepository.save(template);
+
+        //intakeService.changeIntakesByChangingUntilTemplateDate(template.getId(), oldUntilTime);
+    }
+
+    /** Логичка валидирования коррекности смены даты окончания приёмов
+     * @param template Шаблон, окончание которого меняется
+     * @param newUntil Новая дата окончания
+     * @return boolean
+     * */
+    private boolean changeTemplateUntilDate(MedicineTemplate template,
+                                            LocalDate newUntil) {
+        long newPeriod = ChronoUnit.DAYS.between(template.getStart(), newUntil);
+
+        if(newPeriod <= 0) return false; // Если дата окончания раньше или равна дате начала
+        if(newPeriod > limitsProperties.getMaxDuration()) return false; // Длительность приёмов больше максимально возможного количества
+
+        return true;
     }
 
     public MedicineTemplate create(CreateTemplateRequest request,
