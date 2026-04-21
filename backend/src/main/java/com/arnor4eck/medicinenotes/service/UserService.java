@@ -47,7 +47,7 @@ public class UserService {
                 ExceededLimit limit = codeVerifierService.checkLimits(request.email()); // Не превысил ли пользователь лимиты
 
                 switch (limit){
-                    case NONE -> { }
+                    case NONE -> codeVerifierService.updateParamsAndSendCode(request); // Если пользователь отправил тот же запрос без нарушения лимитов
                     case MAX_SEND -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                             "Количество запросов на повторную отправку превышено. Повторите попытку позже.");
                     case ATTEMPTS -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
