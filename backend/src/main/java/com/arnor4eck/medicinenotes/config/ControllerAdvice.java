@@ -1,6 +1,7 @@
 package com.arnor4eck.medicinenotes.config;
 
 import com.arnor4eck.medicinenotes.util.controller_advice.ExceptionResponseFactory;
+import com.arnor4eck.medicinenotes.util.exception.CodeVerifierException;
 import com.arnor4eck.medicinenotes.util.exception.UserAlreadyExists;
 import com.arnor4eck.medicinenotes.util.exception.illegal_argument.LimitExceededException;
 import com.arnor4eck.medicinenotes.util.exception.not_found.NotFoundException;
@@ -121,8 +122,8 @@ public class ControllerAdvice {
                 response, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({UserAlreadyExists.class})
-    public ExceptionResponse responseUserAlreadyExistsException(UserAlreadyExists e,
+    @ExceptionHandler({UserAlreadyExists.class, CodeVerifierException.class})
+    public ExceptionResponse responseUserAlreadyExistsException(Exception e,
                                                                 HttpServletResponse response){
         return exceptionResponseFactory.create(e.getMessage(),
                 response, HttpStatus.BAD_REQUEST);

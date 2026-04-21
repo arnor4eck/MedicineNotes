@@ -60,7 +60,6 @@ public class CodeVerifierService {
      * Предварительно не проверяет возможное превышение лимитов.
      *
      * @param request Запрос на регистрацию нового пользователя
-     * @throws CodeVerifierException Если записи с заданным ключем не существует
      * */
     public void createAndSendCode(CreateUserRequest request){
         String code = codeGenerator.generateCode();
@@ -73,6 +72,38 @@ public class CodeVerifierService {
 
         attemptsRedisStorage.put(request.email(), 0);
         sendRedisStorage.put(request.email(), 1);
+    }
+
+    /**
+     * Обновляет данные о пользователе и отправляет новый код.
+     * Применяется в случае, если процесс регистрации пользователя сохранен в хранилище, но он отправил данные о регистрации снова.
+     *
+     * @param request Запрос на регистрацию нового пользователя
+     * */
+    public void updateParamsAndSendCode(CreateUserRequest request){
+        try{
+            PreRegistration saved = getValueWithCheck(codeRedisStorage.get(request.email()));
+
+            if(saved.username().equals(request.username()) &&
+                passwordEncoder.matches(request.password(), saved.password()))
+                return;
+
+        }catch (CodeVerifierException e) {}
+
+        String code = codeGenerator.generateCode();
+
+        mailSender.send(request.email(), SUBJECT, String.format(TEXT_PATTERN, code));
+        codeRedisStorage.put(request.email(),
+                new PreRegistration(request.email(), request.username(),
+                        passwordEncoder.encode(request.password()), code));
+
+        attemptsRedisStorage.put(request.email(), 0);
+        try{
+            sendRedisStorage.put(request.email(),
+                    getValueWithCheck(sendRedisStorage.get(request.email())) + 1);
+        }catch (CodeVerifierException e) {
+            sendRedisStorage.put(request.email(), 1);
+        }
     }
 
     /**
