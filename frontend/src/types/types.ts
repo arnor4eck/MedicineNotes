@@ -20,6 +20,15 @@ export interface Intake {
     shouldAdoptedIn: string;
 }
 
+export interface VerifyCodeRequest {
+    email : string;
+    code : string;
+}
+
+export interface NewCodeRequest {
+    email : string;
+}
+
 export interface CreateUserRequest {
     username: string;
     email: string;

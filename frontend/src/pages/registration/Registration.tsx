@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { registrationService } from "../../service/registrationService.ts";
 import '../css/form.css'
 import './Registration.css'
+import { useVerificationStore } from '../../storage/verificationStorage.ts';
 import type {ApiError} from "../../types/apiError.ts";
 
 export default function Registration(){
@@ -13,6 +14,7 @@ export default function Registration(){
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const startVerification = useVerificationStore(state => state.startVerification);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -26,11 +28,10 @@ export default function Registration(){
         }
 
         try {
-            await registrationService.newUser({username, email, password});
-            setTimeout(() => {
-                navigate('/auth', { replace: true });
-            }, 100);
+            await registrationService.preregistration({username, email, password});
 
+            startVerification(email);
+            navigate('/verify_email');
         } catch (error) {
             setError((error as ApiError).messages.join(','));
         } finally {
@@ -41,7 +42,7 @@ export default function Registration(){
     return (
         <div className='bg bg_form'>
             <form onSubmit={handleSubmit} className="form">
-                <p>Вход в систему</p>
+                <p>Регистрация</p>
 
                 {error && <div className="error-message">{error}</div>}
 

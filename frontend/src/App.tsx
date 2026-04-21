@@ -11,57 +11,34 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import TemplateStatistics from "./pages/statistics/TemplateStatistics.tsx";
 import IntakesStatistics from "./pages/statistics/IntakesStatistics.tsx";
 import Registration from "./pages/registration/Registration.tsx";
+import {VerifyEmailRoute} from "./components/VerifyEmailRoute.tsx";
+import VerifyEmail from "./pages/registration/VerifyEmail.tsx";
 
 function App() {
 
   return (
       <BrowserRouter>
           <Routes>
-              <Route
-                  path="/"
-                  element={<Main />}
-              />
+              <Route path="/" element={<Main />}/>
 
-              <Route
-                path="intakes"
-                element={<Intakes />}
-              />
-
-              <Route path="/templates/:id" element={<TemplateDetail />} />
+              <Route path="intakes" element={<Intakes />}/>
               <Route path="/intakes/:id" element={<IntakeDetails />} />
               <Route path="/intakes/:id/done" element={<IntakeDetails />} />
+
               <Route path="/statistics/templates/:id" element={<TemplateStatistics />} />
               <Route path="/statistics/intakes" element={<IntakesStatistics />} />
 
               <Route path="/registration" element={<Registration />} />
-
-              <Route
-                  path="/auth"
+              <Route path="/verify_email"
                   element={
-                    <AuthPage />
-                  }
-              />
+                      <VerifyEmailRoute requireVerification={true} redirectTo="/registration"> <VerifyEmail /></VerifyEmailRoute>
+                  }/>
+              <Route path="/auth" element={<AuthPage />}/>
+              <Route path="/logout" element={<Logout />}/>
 
-              <Route
-                  path="/templates"
-                  element={
-                      <TemplatesPage />
-                  }
-              />
-
-              <Route
-                path="/templates/create"
-                element={
-                  <CreateTemplate />
-                }
-              />
-
-              <Route
-                  path="/logout"
-                  element={
-                      <Logout />
-                  }
-              />
+              <Route path="/templates/:id" element={<TemplateDetail />} />
+              <Route path="/templates" element={<TemplatesPage />}/>
+              <Route path="/templates/create" element={<CreateTemplate />}/>
           </Routes>
       </BrowserRouter>
   )
