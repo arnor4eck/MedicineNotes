@@ -5,6 +5,7 @@ import com.arnor4eck.medicinenotes.service.code_verifier.CodeGenerator;
 import com.arnor4eck.medicinenotes.service.code_verifier.ExceededLimit;
 import com.arnor4eck.medicinenotes.service.code_verifier.RedisStorage;
 import com.arnor4eck.medicinenotes.service.mail_sender.MailSenderService;
+import com.arnor4eck.medicinenotes.service.mail_sender.SimpleMailSender;
 import com.arnor4eck.medicinenotes.util.PreRegistration;
 import com.arnor4eck.medicinenotes.util.exception.CodeVerifierException;
 import com.arnor4eck.medicinenotes.util.request.CreateUserRequest;
@@ -22,7 +23,7 @@ public class CodeVerifierService {
     private final RedisStorage<Integer> sendRedisStorage;
 
     private final CodeGenerator codeGenerator;
-    private final MailSenderService mailSender;
+    private final SimpleMailSender mailSender;
     private final PasswordEncoder passwordEncoder;
 
     private final LimitsProperties limitsProperties;
@@ -33,7 +34,7 @@ public class CodeVerifierService {
     public CodeVerifierService(@Qualifier("codeRedisStorage") RedisStorage<PreRegistration> codeStorage,
                                @Qualifier("attemptsRedisStorage") RedisStorage<Integer> attemptsStorage,
                                @Qualifier("sendRedisStorage") RedisStorage<Integer> sendStorage,
-                               MailSenderService mailSender, CodeGenerator codeGenerator,
+                               SimpleMailSender mailSender, CodeGenerator codeGenerator,
                                PasswordEncoder passwordEncoder, LimitsProperties limitsProperties) {
         this.codeRedisStorage = codeStorage;
         this.attemptsRedisStorage = attemptsStorage;
