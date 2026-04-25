@@ -33,9 +33,14 @@ apiClient.interceptors.response.use(
         if (error.response.status === 401 || error.response.status === 403) {
             window.location.href = '/auth';
         }
+        if(error.response)
+            return Promise.reject({
+                code: error.response.data.code,
+                messages: error.response.data.messages
+            });
         return Promise.reject({
-            code: error.response.data.code,
-            messages: error.response.data.messages
+            code: 500,
+            messages: "SERVER ERROR"
         });
     }
 );
