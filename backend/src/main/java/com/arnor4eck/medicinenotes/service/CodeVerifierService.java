@@ -9,12 +9,14 @@ import com.arnor4eck.medicinenotes.service.mail_sender.SimpleMailSender;
 import com.arnor4eck.medicinenotes.util.PreRegistration;
 import com.arnor4eck.medicinenotes.util.exception.CodeVerifierException;
 import com.arnor4eck.medicinenotes.util.request.CreateUserRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class CodeVerifierService {
 
@@ -71,6 +73,7 @@ public class CodeVerifierService {
                 new PreRegistration(request.email(), request.username(),
                         passwordEncoder.encode(request.password()), code));
 
+        log.info("обнуление попыток");
         attemptsRedisStorage.put(request.email(), 0);
         sendRedisStorage.put(request.email(), 1);
     }
@@ -116,6 +119,7 @@ public class CodeVerifierService {
      * @return Возможное нарушение лимита
      * */
     public ExceededLimit checkLimits(String email) {
+        log.info("Проверка лимитов");
         int attempts = getValueWithCheck(attemptsRedisStorage.get(email));
         int send = getValueWithCheck(sendRedisStorage.get(email));
 
@@ -144,6 +148,7 @@ public class CodeVerifierService {
         sendRedisStorage.put(email, getValueWithCheck(sendRedisStorage.get(email)) + 1);
         codeRedisStorage.put(email, new PreRegistration(savedCode, code));
         attemptsRedisStorage.put(email, 0);
+        log.info("Отправлен новый код");
     }
 
     /**
@@ -190,6 +195,7 @@ public class CodeVerifierService {
         codeRedisStorage.remove(email);
         attemptsRedisStorage.remove(email);
         sendRedisStorage.remove(email);
+        log.info("Данные стерты");
     }
 
     private <T> T getValueWithCheck(Optional<? extends T> optional){

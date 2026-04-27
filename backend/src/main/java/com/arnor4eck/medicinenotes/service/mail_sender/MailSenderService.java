@@ -1,6 +1,7 @@
 package com.arnor4eck.medicinenotes.service.mail_sender;
 
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Profile({"!dev"})
 @Setter
+@Slf4j
 public class MailSenderService implements SimpleMailSender {
 
     private final JavaMailSender mailSender;
@@ -32,5 +34,6 @@ public class MailSenderService implements SimpleMailSender {
         message.setText(text);
 
         mailSender.send(message);
+        log.info("Сообщение отправлено на: {}, text: {}", to, text);
     }
 }

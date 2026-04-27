@@ -1,5 +1,6 @@
 package com.arnor4eck.medicinenotes.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializ
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import tools.jackson.databind.ObjectMapper;
 
+@Slf4j
 @Configuration
 public class RedisConfig {
 
@@ -18,12 +20,14 @@ public class RedisConfig {
                                                                      @Value("${spring.data.redis.host}") String host,
                                                                      @Value("${spring.data.redis.port}") int port,
                                                                      @Value("${spring.data.redis.password}") String password) {
+        log.info("Настройки редиса");
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
 
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
         redisStandaloneConfiguration.setDatabase(database);
         redisStandaloneConfiguration.setPassword(password);
+        log.info("db: {}, host: {}, port: {}, password: {}", database, host, port, password);
 
         return redisStandaloneConfiguration;
     }
@@ -47,6 +51,7 @@ public class RedisConfig {
         template.setHashValueSerializer(serializer);
 
         template.afterPropertiesSet();
+        log.info("Настройка редиса окончена");
         return template;
     }
 }

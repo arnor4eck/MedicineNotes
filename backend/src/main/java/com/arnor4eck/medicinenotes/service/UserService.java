@@ -16,6 +16,7 @@ import com.arnor4eck.medicinenotes.util.request.VerifyCodeRequest;
 import com.arnor4eck.medicinenotes.util.response.AuthenticationResponse;
 import com.arnor4eck.medicinenotes.util.response.VerifyEmailResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserService {
     private final UserRepository userRepository;
 
@@ -41,11 +43,12 @@ public class UserService {
     public void preregistration(CreateUserRequest request){
         try{
             userDetailsService.loadUserByUsername(request.email());
+            log.info("Проверка на существующего");
             throw new UserAlreadyExists("Пользователь с таким email уже существует");
         } catch (UserNotFoundException e) {
             if(codeVerifierService.isUserAlreadyInStorage(request.email())){ // Если пользователя уже есть код, ждем, когда он его отправит
                 ExceededLimit limit = codeVerifierService.checkLimits(request.email()); // Не превысил ли пользователь лимиты
-
+                log.info("Проверка лимитов");
                 switch (limit){
                     case NONE -> codeVerifierService.updateParamsAndSendCode(request); // Если пользователь отправил тот же запрос без нарушения лимитов
                     case MAX_SEND -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -53,14 +56,18 @@ public class UserService {
                     case ATTEMPTS -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                             "Количество неверных попыток превышено. Повторите попытку позже.");
                 }
-            }else // Если нет - отправляем код и настраиваем остальные параметры
+                log.info("Все ок");
+            }else { // Если нет - отправляем код и настраиваем остальные параметры
+                log.info("Отправлен код");
                 codeVerifierService.createAndSendCode(request);
+            }
         }
     }
 
     private boolean verifyCodeForRegistration(VerifyCodeRequest request){
         String email = request.email();
         String code = request.code();
+        log.info("Верификация кода");
 
         if (!codeVerifierService.isUserAlreadyInStorage(email)) {
             throw new ResponseStatusException(
@@ -77,6 +84,7 @@ public class UserService {
         }
 
         if(codeVerifierService.verifyCode(email, code)){
+            log.info("Коды совпадают");
             PreRegistration savedPreRegistration = codeVerifierService.getPreRegistration(email);
 
             userRepository.save(
@@ -88,8 +96,10 @@ public class UserService {
                         .build());
             codeVerifierService.removeAll(email);
             return true;
-        }else
+        }else {
+            log.info("Коды не совпадают");
             codeVerifierService.increaseAttempts(email);
+        }
         return false;
     }
 
@@ -108,6 +118,7 @@ public class UserService {
         }
 
         if(codeVerifierService.checkLimits(request.email()) != ExceededLimit.MAX_SEND){
+            log.info("Отправлен новый код");
             codeVerifierService.sendNewCode(request.email());
             return ResponseEntity.ok().build();
         }else{
