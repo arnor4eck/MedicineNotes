@@ -4,7 +4,6 @@ import com.arnor4eck.medicinenotes.config.LimitsProperties;
 import com.arnor4eck.medicinenotes.service.code_verifier.CodeGenerator;
 import com.arnor4eck.medicinenotes.service.code_verifier.ExceededLimit;
 import com.arnor4eck.medicinenotes.service.code_verifier.RedisStorage;
-import com.arnor4eck.medicinenotes.service.mail_sender.MailSenderService;
 import com.arnor4eck.medicinenotes.service.mail_sender.SimpleMailSender;
 import com.arnor4eck.medicinenotes.util.PreRegistration;
 import com.arnor4eck.medicinenotes.util.exception.CodeVerifierException;
