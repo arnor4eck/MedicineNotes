@@ -20,8 +20,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:80"
-    container_name: react-frontend
+      - "80:80"
     restart: unless-stopped
     depends_on:
       - backend
