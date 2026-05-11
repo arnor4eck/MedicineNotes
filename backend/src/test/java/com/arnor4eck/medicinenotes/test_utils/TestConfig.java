@@ -1,5 +1,6 @@
 package com.arnor4eck.medicinenotes.test_utils;
 
+import com.arnor4eck.medicinenotes.config.LimitsProperties;
 import com.arnor4eck.medicinenotes.util.controller_advice.ExceptionResponseFactory;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -21,5 +22,16 @@ public class TestConfig {
         when(factory.create(anyList(), any(), any())).thenCallRealMethod();
 
         return factory;
+    }
+
+    @Bean
+    @Primary
+    public LimitsProperties limitsProperties() {
+        LimitsProperties limitsProperties = new LimitsProperties();
+        limitsProperties.setMaxDuration((short) 90);
+        limitsProperties.setMaxTemplates((short) 15);
+        limitsProperties.setMaxTimesADay((short) 30);
+
+        return limitsProperties;
     }
 }

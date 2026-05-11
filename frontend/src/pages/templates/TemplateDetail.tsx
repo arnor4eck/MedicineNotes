@@ -61,6 +61,13 @@ export default function TemplateDetail(){
 
                             <div className="template_card__info">
                                 <div className="template_card__info-item">
+                                    <span className="template_card__info-label">С</span>
+                                    <span className={'template_card__info-value ' + (isActive ? '' : 'template_card__info-data--red')}>
+                                        {template.start}
+                                    </span>
+                                </div>
+
+                                <div className="template_card__info-item">
                                     <span className="template_card__info-label">До</span>
                                     <span className={'template_card__info-value ' + (isActive ? '' : 'template_card__info-data--red')}>
                                         {template.until}

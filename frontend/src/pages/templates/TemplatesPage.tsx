@@ -72,6 +72,7 @@ const TemplatesPage = () => {
                                     id={template.id}
                                     name={template.name}
                                     until={template.until}
+                                    start={template.start}
                                 />
                             </li>
                         ))}

@@ -10,6 +10,7 @@ export interface MedicineTemplate {
     description: string;
     quantityPerDay: number;
     until: string;
+    start: string;
 }
 
 export interface Intake {

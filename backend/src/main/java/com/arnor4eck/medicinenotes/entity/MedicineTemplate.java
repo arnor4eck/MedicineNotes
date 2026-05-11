@@ -20,6 +20,10 @@ public class MedicineTemplate {
     @Column(nullable = false)
     private String name;
     private String description;
+
+    @Column(nullable = false)
+    private LocalDate start;
+
     @Column(nullable = false)
     private LocalDate until;
     @Column(nullable = false)
