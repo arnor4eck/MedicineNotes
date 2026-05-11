@@ -45,7 +45,7 @@
 .template_card__info {
     padding: 16px 20px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 15px;
     background: #fafafa;
 }
