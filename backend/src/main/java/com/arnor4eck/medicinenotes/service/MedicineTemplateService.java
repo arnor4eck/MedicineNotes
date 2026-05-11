@@ -11,17 +11,14 @@ import com.arnor4eck.medicinenotes.service.cache.CacheTemplateService;
 import com.arnor4eck.medicinenotes.util.dto.MedicineTemplateDto;
 import com.arnor4eck.medicinenotes.util.exception.illegal_argument.LimitExceededException;
 import com.arnor4eck.medicinenotes.util.exception.not_found.MedicineTemplateNotFoundException;
-import com.arnor4eck.medicinenotes.util.request.ChangeTemplateUntilDateRequest;
 import com.arnor4eck.medicinenotes.util.request.CreateTemplateRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,8 +36,6 @@ public class MedicineTemplateService {
     private final LimitsProperties limitsProperties;
 
     private final CacheTemplateService cacheTemplateService;
-
-    //private final IntakeService intakeService;
 
     public MedicineTemplate getTemplateByIdCreatorValidation(long id,
                                                    String email) {
@@ -62,57 +57,25 @@ public class MedicineTemplateService {
                 .orElseThrow(() -> new MedicineTemplateNotFoundException("Шаблон с заданным ID не найден."));
     }
 
-    /** Обновление существующего шаблона, изменение даты окончания приёмов
-     * @param id ID шаблона
-     * @param email Email пользователя, запрашивающего смену
-     * @param changeTemplateUntilDateRequest Новая дата окончания приёмов
-     *
-     * */
-    @Transactional
-    public void changeTemplateUntilDateById(long id, String email,
-                                            ChangeTemplateUntilDateRequest changeTemplateUntilDateRequest){
-        MedicineTemplate template = this.getTemplateByIdCreatorValidation(id, email);
-
-        if(!this.changeTemplateUntilDate(template, changeTemplateUntilDateRequest.until()))
-            throw new ResponseStatusException(HttpStatusCode.valueOf(400),
-                    "Некорректная дата.");
-
-        LocalDate oldUntilTime = template.getUntil();
-        template.setUntil(changeTemplateUntilDateRequest.until());
-        templateRepository.save(template);
-
-        //intakeService.changeIntakesByChangingUntilTemplateDate(template.getId(), oldUntilTime);
-    }
-
-    /** Логичка валидирования коррекности смены даты окончания приёмов
-     * @param template Шаблон, окончание которого меняется
-     * @param newUntil Новая дата окончания
-     * @return boolean
-     * */
-    private boolean changeTemplateUntilDate(MedicineTemplate template,
-                                            LocalDate newUntil) {
-        long newPeriod = ChronoUnit.DAYS.between(template.getStart(), newUntil);
-
-        if(newPeriod <= 0) return false; // Если дата окончания раньше или равна дате начала
-        if(newPeriod > limitsProperties.getMaxDuration()) return false; // Длительность приёмов больше максимально возможного количества
-
-        return true;
-    }
-
     public MedicineTemplate create(CreateTemplateRequest request,
                        String creatorEmail) {
 
-        if (!request.until().isAfter(LocalDate.now()))
+        if(request.start().isBefore(LocalDate.now()))
+            throw new IllegalArgumentException(
+                    "Дата начала не должна быть раньше сегодняшней даты."
+            );
+
+        if (!request.until().isAfter(request.start()))
             throw new IllegalArgumentException(
                     "Дата 'до' должна быть в будущем. " +
-                            request.until() + " <= " + LocalDate.now()
+                            request.until() + " < " + request.start()
             );
 
         if(request.quantityPerDay() > limitsProperties.getMaxTimesADay())
             throw new LimitExceededException("Максимум %s раз в день."
                             .formatted(limitsProperties.getMaxTimesADay()));
 
-        if(request.until().isAfter(LocalDate.now().plusDays(limitsProperties.getMaxDuration())))
+        if(request.until().isAfter(request.start().plusDays(limitsProperties.getMaxDuration())))
             throw new LimitExceededException("Максимальная продолжительность - %s дней."
                             .formatted(limitsProperties.getMaxDuration()));
 
@@ -126,12 +89,13 @@ public class MedicineTemplateService {
                 .name(request.name())
                 .description(request.description())
                 .quantityPerDay(request.quantityPerDay())
+                .start(request.start())
                 .until(request.until())
                 .creator(creator)
                 .build());
 
         // TODO проработать систему с отрезочным созданием через Scheduler
-        List<LocalDate> datesOfIntakes = LocalDate.now().datesUntil(request.until()).toList();
+        List<LocalDate> datesOfIntakes = request.start().datesUntil(request.until()).toList();
         List<Intake> futureIntakes = new ArrayList<>(datesOfIntakes.size() * request.quantityPerDay());
 
         for(LocalDate date : datesOfIntakes)

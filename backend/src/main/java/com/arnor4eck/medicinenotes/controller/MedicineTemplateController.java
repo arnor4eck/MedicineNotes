@@ -41,10 +41,4 @@ public class MedicineTemplateController {
     public Collection<MedicineTemplateDto> getTemplates(@AuthenticationPrincipal String email){
         return templateService.getAllUserTemplates(email);
     }
-
-    @PatchMapping("/{id}")
-    public void changeUntilDate(@PathVariable long id, @AuthenticationPrincipal String email,
-                                @RequestBody @Valid ChangeTemplateUntilDateRequest changeTemplateUntilDateRequest){
-        templateService.changeTemplateUntilDateById(id, email, changeTemplateUntilDateRequest);
-    }
 }

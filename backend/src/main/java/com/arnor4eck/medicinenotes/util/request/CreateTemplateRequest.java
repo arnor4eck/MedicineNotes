@@ -8,5 +8,6 @@ import java.time.LocalDate;
 
 public record CreateTemplateRequest(@NotBlank String name, @NotBlank String description,
                                     @Positive int quantityPerDay,
+                                    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") LocalDate start,
                                     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") LocalDate until) {
 }

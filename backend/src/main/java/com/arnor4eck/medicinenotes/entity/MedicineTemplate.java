@@ -1,6 +1,5 @@
 package com.arnor4eck.medicinenotes.entity;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,8 +22,7 @@ public class MedicineTemplate {
     private String description;
 
     @Column(nullable = false)
-    @Builder.Default
-    private LocalDate start = LocalDate.now();
+    private LocalDate start;
 
     @Column(nullable = false)
     private LocalDate until;
