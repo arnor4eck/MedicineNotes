@@ -8,6 +8,7 @@ const CreateTemplatePage = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [quantityPerDay, setQuantityPerDay] = useState(1);
+    const [start, setStart] = useState('');
     const [until, setUntil] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -20,7 +21,7 @@ const CreateTemplatePage = () => {
 
         try {
             await medicineTemplateService.createMedicineTemplate({
-                name, description, quantityPerDay, until
+                name, description, quantityPerDay, until, start
             });
             setTimeout(() => {
                 navigate('/templates', { replace: true });
@@ -79,10 +80,22 @@ const CreateTemplatePage = () => {
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="date">Конец:</label>
+                    <label htmlFor="start">Начало:</label>
                     <input
                         type="date"
-                        id="date"
+                        id="start"
+                        value={start}
+                        onChange={(e) => setStart(e.target.value)}
+                        required
+                        disabled={loading}
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="until">Конец:</label>
+                    <input
+                        type="date"
+                        id="until"
                         value={until}
                         onChange={(e) => setUntil(e.target.value)}
                         required
@@ -93,8 +106,7 @@ const CreateTemplatePage = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="main-button"
-                >
+                    className="main-button">
                     {loading ? 'Создание...' : 'Создать'}
                 </button>
             </form>

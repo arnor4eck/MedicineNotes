@@ -37,11 +37,9 @@ public class MedicineTemplateService {
 
     private final CacheTemplateService cacheTemplateService;
 
-    public MedicineTemplate getTemplateByIdCreator(long id,
+    public MedicineTemplate getTemplateByIdCreatorValidation(long id,
                                                    String email) {
-        MedicineTemplate template = cacheTemplateService.getTemplateById(id)
-                .orElseThrow(() ->new MedicineTemplateNotFoundException("Шаблон с заданным ID не найден."));
-
+        MedicineTemplate template = this.getTemplateById(id);
         if(!template.getCreator().getEmail().equals(email))
             throw new ResponseStatusException(HttpStatusCode.valueOf(403),
                     "У вас нет доступа к этому ресурсу.");
@@ -49,20 +47,34 @@ public class MedicineTemplateService {
         return template;
     }
 
+    /** Получение шаблона по ID
+     * @param id ID шаблона
+     * @return Найденный шаблон
+     * @throws MedicineTemplateNotFoundException
+     * */
+    MedicineTemplate getTemplateById(long id){
+        return cacheTemplateService.getTemplateById(id)
+                .orElseThrow(() -> new MedicineTemplateNotFoundException("Шаблон с заданным ID не найден."));
+    }
+
     public MedicineTemplate create(CreateTemplateRequest request,
                        String creatorEmail) {
 
-        if (!request.until().isAfter(LocalDate.now()))
+        if(request.start().isBefore(LocalDate.now()))
             throw new IllegalArgumentException(
-                    "Дата 'до' должна быть в будущем. " +
-                            request.until() + " <= " + LocalDate.now()
+                    "Дата начала не должна быть раньше сегодняшней даты."
+            );
+
+        if (!request.until().isAfter(request.start()))
+            throw new IllegalArgumentException(
+                    "Дата начала должна быть раньше даты окончания."
             );
 
         if(request.quantityPerDay() > limitsProperties.getMaxTimesADay())
             throw new LimitExceededException("Максимум %s раз в день."
                             .formatted(limitsProperties.getMaxTimesADay()));
 
-        if(request.until().isAfter(LocalDate.now().plusDays(limitsProperties.getMaxDuration())))
+        if(request.until().isAfter(request.start().plusDays(limitsProperties.getMaxDuration())))
             throw new LimitExceededException("Максимальная продолжительность - %s дней."
                             .formatted(limitsProperties.getMaxDuration()));
 
@@ -76,12 +88,13 @@ public class MedicineTemplateService {
                 .name(request.name())
                 .description(request.description())
                 .quantityPerDay(request.quantityPerDay())
+                .start(request.start())
                 .until(request.until())
                 .creator(creator)
                 .build());
 
         // TODO проработать систему с отрезочным созданием через Scheduler
-        List<LocalDate> datesOfIntakes = LocalDate.now().datesUntil(request.until()).toList();
+        List<LocalDate> datesOfIntakes = request.start().datesUntil(request.until()).toList();
         List<Intake> futureIntakes = new ArrayList<>(datesOfIntakes.size() * request.quantityPerDay());
 
         for(LocalDate date : datesOfIntakes)
