@@ -67,8 +67,7 @@ public class MedicineTemplateService {
 
         if (!request.until().isAfter(request.start()))
             throw new IllegalArgumentException(
-                    "Дата 'до' должна быть в будущем. " +
-                            request.until() + " < " + request.start()
+                    "Дата начала должна быть раньше даты окончания."
             );
 
         if(request.quantityPerDay() > limitsProperties.getMaxTimesADay())

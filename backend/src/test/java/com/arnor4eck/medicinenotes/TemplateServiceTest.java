@@ -78,7 +78,7 @@ public class TemplateServiceTest {
             medicineTemplateService.create(request, creator.getEmail());
         });
 
-        Assertions.assertTrue(ex.getMessage().startsWith("Дата 'до' должна быть в будущем."));
+        Assertions.assertTrue(ex.getMessage().startsWith("Дата начала должна быть раньше даты окончания."));
     }
 
     @Test

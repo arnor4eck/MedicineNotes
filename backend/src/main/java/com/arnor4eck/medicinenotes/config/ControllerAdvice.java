@@ -106,8 +106,8 @@ public class ControllerAdvice {
                 response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({LimitExceededException.class})
-    public ExceptionResponse responseLimitExceededException(LimitExceededException e,
+    @ExceptionHandler({LimitExceededException.class, IllegalArgumentException.class})
+    public ExceptionResponse responseLimitExceededException(Exception e,
                                                             HttpServletResponse response) {
         return exceptionResponseFactory.create(e.getMessage(),
                 response, HttpStatus.BAD_REQUEST);

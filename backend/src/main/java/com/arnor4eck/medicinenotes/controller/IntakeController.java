@@ -30,7 +30,6 @@ public class IntakeController {
     public Collection<IntakeDto> getAllIntakesByCreatorEmail(@AuthenticationPrincipal String email,
                                                           @RequestParam(required = false)
                                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
-        System.out.println(date);
         return intakeService.getAllIntakesByCreatorAndAdoptedDate(email, date);
     }
 
