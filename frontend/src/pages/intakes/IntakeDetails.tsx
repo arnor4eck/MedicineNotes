@@ -41,7 +41,7 @@ export default function TemplateDetail(){
 
             setLoading(true);
             setError('');
-            const newRes = await intakeService.changeIntakeStatus(id, 'DONE');
+            const newRes = await intakeService.markAsDone(id);
 
             setIntake(newRes)
         } catch (err) {

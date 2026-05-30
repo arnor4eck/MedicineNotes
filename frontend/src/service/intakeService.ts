@@ -16,14 +16,10 @@ class IntakeService {
         }
     }
 
-    async changeIntakeStatus(id : string,
-                             status : string): Promise<Intake> {
+    async markAsDone(id : string): Promise<Intake> {
         try {
-            const request = {
-                status: status
-            }
 
-            const res = await api.patch<Intake>(INTAKE_URL + `/${id}/status`, request);
+            const res = await api.patch<Intake>(INTAKE_URL + `/${id}/status`);
             return res.data;
         } catch (error) {
             console.error(`Ошибка изменения статуса приёма c id ${id}:` , error);

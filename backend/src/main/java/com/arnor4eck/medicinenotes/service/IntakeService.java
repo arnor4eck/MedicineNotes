@@ -6,7 +6,6 @@ import com.arnor4eck.medicinenotes.repository.IntakeRepository;
 import com.arnor4eck.medicinenotes.service.cache.CacheIntakeService;
 import com.arnor4eck.medicinenotes.util.dto.IntakeDto;
 import com.arnor4eck.medicinenotes.util.exception.not_found.IntakeNotFoundException;
-import com.arnor4eck.medicinenotes.util.request.ChangeIntakeStatusRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -49,27 +48,22 @@ public class IntakeService {
                 .toList();
     }
 
-    public IntakeDto changeIntakeStatus(long id,
-                                         ChangeIntakeStatusRequest request,
-                                         String email){
+    public IntakeDto setStatusDone(long id, String email){
         Intake intake = getIntakeById(id);
-        IntakesStatus status = IntakesStatus.valueOf(request.status());
 
-        if(intake.getStatus() == status ||
-                intake.getStatus() != IntakesStatus.PENDING)
+        if(intake.getStatus() != IntakesStatus.PENDING)
             return IntakeDto.fromEntity(intake);
 
         checkIsIntakeOwner(intake, email);
 
-        intake.setStatus(status);
-
-        if(status == IntakesStatus.DONE)
-            intake.setAdoptedIn(LocalDateTime.now(ZoneId.of("UTC")));
+        intake.setStatus(IntakesStatus.DONE);
+        intake.setAdoptedIn(LocalDateTime.now(ZoneId.of("UTC")));
 
         intakeRepository.save(intake);
 
         return IntakeDto.fromEntity(intake);
     }
+
 
     private Intake getIntakeById(long id){
         return cacheIntakeService.getIntakeById(id)

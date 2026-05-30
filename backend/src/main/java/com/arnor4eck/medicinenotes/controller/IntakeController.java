@@ -2,9 +2,8 @@ package com.arnor4eck.medicinenotes.controller;
 
 import com.arnor4eck.medicinenotes.service.IntakeService;
 import com.arnor4eck.medicinenotes.util.dto.IntakeDto;
-import com.arnor4eck.medicinenotes.util.request.ChangeIntakeStatusRequest;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,12 +33,11 @@ public class IntakeController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<IntakeDto> changeStatus(@PathVariable long id,
-                                       @Valid @RequestBody ChangeIntakeStatusRequest changeIntakeStatusRequest,
-                                       @AuthenticationPrincipal String email){
+    public ResponseEntity<@NonNull IntakeDto> changeStatus(@PathVariable long id,
+                                                           @AuthenticationPrincipal String email){
         return ResponseEntity
                 .accepted()
-                .body(intakeService.changeIntakeStatus(id, changeIntakeStatusRequest, email));
+                .body(intakeService.setStatusDone(id, email));
     }
 }
 

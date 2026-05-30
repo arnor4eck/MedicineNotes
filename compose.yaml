@@ -59,8 +59,6 @@ services:
       REDIS_PORT: ${REDIS_PORT}
       REDIS_DATABASE: ${REDIS_DATABASE}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
-    ports:
-      - "8080:8080"
     depends_on:
       postgres:
         condition: service_healthy
